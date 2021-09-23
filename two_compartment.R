@@ -25,7 +25,7 @@ for(i in 2:t){
     
                (mat1[(i-1),2,j]==1)*rmultinom(n, size=1, c(p_1_0, (1-(p_1_2+p_1_0)) , p_1_2) ) 
 
-        (mat1[(i-1),2,j]==1)*rmultinom(n, size=1, c(p_1_0, (1-(p_1_2+p_1_0)) , p_1_2) ) 
+       # (mat1[(i-1),2,j]==1)*rmultinom(n, size=1, c(p_1_0, (1-(p_1_2+p_1_0)) , p_1_2) ) 
   
   }
 }
