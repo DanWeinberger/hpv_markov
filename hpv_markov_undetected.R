@@ -6,8 +6,10 @@
 
 # 20 years
 t = 20
+
 # 100 people
 N.people = 100
+
 # 6 states: normal, infected, CIN 1, CIN 2, CIN 3, cancer
 N.states = 6
 
@@ -17,24 +19,31 @@ N.states = 6
 # Do I need to include p_1_1, etc or is this implied?
 # normal > normal
 p_1_1 = 0.7
+
 # normal > infected
 p_1_2 <- 0.3
+
 # infected > infected
 p_2_2 = 0.5
+
 # infected > normal
 p_2_1 <- 0.2
+
 # infected > CIN 1
 p_2_3 = 0.3
 p_3_3 = 0.5
 p_3_2 = 0.2
+
 # CIN 1 > CIN 2
 p_3_4 = 0.3
 p_4_4 = 0.5
 p_4_3 = 0.2
+
 # CIN 2 > CIN 3
 p_4_5 = 0.3
 p_5_5 = 0.5
 p_5_4 = 0.2
+
 # CIN 3 > cancer
 p_5_6 = 0.3
 p_6_6 = 1
@@ -69,18 +78,39 @@ set.seed(123)
 
 for(i in 2:t){
   for(j in 1:N.people){
-    mat1[i,1,j] <- (mat1[(i-1),1,j]==1)*rmultinom(1, 1, prob=c(p_1_1,p_1_2))
-    mat1[i,2,j] <- (mat1[(i-1),2,j]==1)*rmultinom(1, 1, prob=c(p_2_2,p_2_1,p_2_3))
-    mat1[i,3,j] <- (mat1[(i-1),3,j]==1)*rmultinom(1, 1, prob=c(p_3_3,p_3_2,p_3_4))
-    mat1[i,4,j] <- (mat1[(i-1),4,j]==1)*rmultinom(1, 1, prob=c(p_4_4,p_4_3,p_4_5))
-    mat1[i,5,j] <- (mat1[(i-1),5,j]==1)*rmultinom(1, 1, prob=c(p_5_5,p_5_4,p_5_6))
-    mat1[i,6,j] <- (mat1[(i-1),6,j]==1)*rbinom(1, 1, prob=p_6_6)
     
+    if(mat1[(i-1),1,j]==1){
+      mat1[i,,j] <- (mat1[(i-1),1,j]==1)*rmultinom(1, 1, prob=c(p_1_1,p_1_2,0,0,0,0))
+    }
+    
+    if(mat1[(i-1),2,j]==1){
+      mat1[i,,j] <- (mat1[(i-1),2,j]==1)*rmultinom(1, 1, prob=c(p_2_1,p_1_2,p_2_3,0,0,0))
+    }
+    
+    if(mat1[(i-1),3,j]==1){
+      mat1[i,,j] <- (mat1[(i-1),3,j]==1)*rmultinom(1, 1, prob=c(0,p_3_2,p_3_3,p_3_4,0,0))
+    }
+    
+    if(mat1[(i-1),4,j]==1){
+      mat1[i,,j] <- (mat1[(i-1),4,j]==1)*rmultinom(1, 1, prob=c(0,0,p_4_3,p_4_4,p_4_5,0))
+    }
+    
+    if(mat1[(i-1),5,j]==1){
+      mat1[i,,j] <- (mat1[(i-1),5,j]==1)*rmultinom(1, 1, prob=c(0,0,0,p_5_4,p_5_5,p_5_6))
+    }
+    
+    if(mat1[(i-1),6,j]==1){
+      mat1[i,,j] <- (mat1[(i-1),6,j]==1)*rmultinom(1, 1, prob=c(0,0,0,0,0,p_6_6))
+    }
   }
 }
 
 
+#Check Progression over time
 
+States <- apply(mat1, c(1,2), sum)
+
+plot(States[,'Normal'], type='l')
 
 
 
