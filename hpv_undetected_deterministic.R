@@ -53,7 +53,7 @@ p_6_7 <- 0.5 # Cancer > Cancer death
 
 
 # aging into cohort
-p_age_in <- 1/120
+p_age_in <- 1/20
 p_age_out =p_age_in
 
 # p_1_0 = 0.3 # Age out normal
