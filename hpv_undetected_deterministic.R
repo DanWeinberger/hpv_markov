@@ -1,68 +1,49 @@
 ### MARKOV MODEL HPV DRAFT
 ## Gwen Oliver
-## Nov 12, 2021
+## Nov 28, 2021
 
 ### This model is for the undetected compartments ONLY
 
-# 20 years
+# 500 years
 t = 500
 
-# 100 people
+# 1000 people
 Pop_size = 1000
 
 # 7 states: normal, infected, CIN 1, CIN 2, CIN 3, cancer, cancer deaths
 N.states = 7
 
 
-# Total prob leaving each state needs to add to 1?
-
 # Rough estimate based on proportion of US pop that is female, 10-14
 # https://www.statista.com/statistics/241488/population-of-the-us-by-sex-and-age/
 
-#p_1_1 <- 0.95 # normal > normal
-# 1-infection
-p_1_2 <- 0.29 # normal > infected
+p_1_2 <- 0.1 # normal > infected
 
-
-#p_2_2 <- 0.6 # infected > infected
-p_2_1 <- 0.1 # infected > normal
+p_2_1 <- 0.5 # infected > normal
 # Numbers vary widely for this parameter
-p_2_3 = 0.1 # infected > CIN 1
+p_2_3 = 0.15 # infected > CIN 1
 
-#p_3_3 <- 0.15 # CIN1 > CIN1
-p_3_2 <- 0.2 # CIN1> infected
+p_3_2 <- 0.2 # CIN1 > infected
 # These estimates vary widely
 p_3_4 <- 0.18  # CIN1 > CIN2
 
-#p_4_4 <- 0.2   # CIN2 > CIN2
 p_4_5 <- 0.3 # CIN2 > CIN3
 p_4_3 <- 0.13   # CIN2 > CIN1
 
-
-#p_5_5 <- 0.2 # CIN3 > CIN3
-# Didn't find an estimate for this
 p_5_4 <- 0.03 # CIN3 > CIN2
 # Only one estimate for this, only for HPV 16/18
 p_5_6 <- 0.2 # CIN 3 > cancer
 # Two estimates for this, 10-fold difference between them
 
-#p_6_6 = 0.3 # Cancer > cancer
-# Didn't find an estimate for this
 p_6_7 <- 0.5 # Cancer > Cancer death
 # Don't have an estimate for this yet, but I think available on SEER
 
-
-# aging into cohort
+# Age into cohort
 p_age_in <- 1/20
-p_age_out =p_age_in
+# Age out of cohort
+p_age_out <- p_age_in
 
-# p_1_0 = 0.3 # Age out normal
-# p_2_0 = 0.3 # Age out infection
-# p_3_0 = 0.1 # Age out CIN1
-# p_4_0 = 0.1 # Age out CIN2
-# p_5_0 = 0.1 # Age out CIN3
-# p_6_0 = 0.1 # Age out cancer
-
+# Stay in compartment 
 p_1_1 = 1-p_age_out-p_1_2 # Stay normal
 p_2_2 = 1-p_age_out-p_2_1-p_2_3 # Stay infected
 p_3_3 = 1-p_age_out-p_3_2-p_3_4 # Stay CIN1
@@ -135,8 +116,9 @@ for(i in 2:t){
     (mat1[(i-1),5])*p_5_6 -      #progress from CIN3
     (mat1[(i-1),6])*p_6_7 -      #die
     (mat1[(i-1),6])*p_age_out        #age out
-  # New Cancer deaths
-  mat1[i,7] <-   (mat1[(i-1),6])*p_6_7        #progress from cancer
+  # Cumulative Cancer deaths
+  mat1[i,7] <- (mat1[(i-1),7]) + 
+    (mat1[(i-1),6])*p_6_7        #progress from cancer
   
 }
 
