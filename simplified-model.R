@@ -57,13 +57,13 @@ years = paste(prefix, suffix, sep=" ")
 
 
 # Create empty array
-mat1 = matrix(NA, t, N.states, dimnames=list(years, c("Normal","LSIL","HSIL","Cancer","Death due to CC")))
+mat1 = matrix(NA, t, N.states, dimnames=list(years, c("Normal","LSIL","HSIL","Cancer","Cancer Death")))
 
 # Assign starting prevalence of each state
 prev_norm = 0.35
 prev_LSIL = 0.5
-prev_HSIL = 0.1
-prev_cancer = 0.05
+prev_HSIL = 0.15
+prev_cancer = 0
 prev_cancdeath = 0
 
 # Assign starting states
@@ -73,35 +73,35 @@ mat1[1,] <- rmultinom(1, Pop_size, prob=c(prev_norm,prev_LSIL,prev_HSIL,prev_can
 # Run model
 for(i in 2:t){
   # Normal
-  mat1[i,1] <- (mat1[(i-1),1]) + #previous N people in normal
-    Pop_size*p_age_in +          #aging in
-    (mat1[(i-1),2])*p_2_1 -      #regress from LSIL
-    (mat1[(i-1),1])*p_1_2 -      #progress to LSIL
-    (mat1[(i-1),1])*p_age_out -  #age out
-    (mat1[(i-1),1])*p_die        #die
+  mat1[i,1] <- (mat1[(i-1),1]) +  
+    (Pop_size*p_age_in) +   
+    (mat1[(i-1),2])*p_2_1 -   
+    (mat1[(i-1),1])*p_1_2 - 
+    (mat1[(i-1),1])*p_age_out - 
+    (mat1[(i-1),1])*p_die
   # LSIL  
-  mat1[i,2] <- (mat1[(i-1),2]) + #previous N people in LSIL
-    (mat1[(i-1),1])*p_1_2 +      #progress from normal
-    (mat1[(i-1),3])*p_3_2 -      #regress from LSIL
-    (mat1[(i-1),2])*p_2_1 -      #regress to normal
-    (mat1[(i-1),2])*p_2_3 -      #progress to HSIL
-    (mat1[(i-1),2])*p_age_out -  #age out
-    (mat1[(i-1),2])*p_die        #die
-  # HSIL
-  mat1[i,3] <- (mat1[(i-1),3]) + #previous N people in HSIL
-    (mat1[(i-1),3])*p_2_3 -      #progress from LSIL
-    (mat1[(i-1),4])*p_3_2 -      #regress to LSIL
-    (mat1[(i-1),4])*p_3_4 -      #progress to cancer
-    (mat1[(i-1),4])*p_age_out -  #age out
-    (mat1[(i-1),3])*p_die        #die
+  mat1[i,2] <-   (mat1[(i-1),2]) + 
+    (mat1[(i-1),1])*p_1_2 +
+    (mat1[(i-1),3])*p_3_2 - 
+    (mat1[(i-1),2])*p_2_1 - 
+    (mat1[(i-1),2])*p_2_3 - 
+    (mat1[(i-1),2])*p_age_out -
+    (mat1[(i-1),2])*p_die
+  # HSIL  
+  mat1[i,3] <-   (mat1[(i-1),3]) + 
+    (mat1[(i-1),2])*p_2_3 -   
+    (mat1[(i-1),3])*p_3_2 - 
+    (mat1[(i-1),3])*p_3_4 - 
+    (mat1[(i-1),3])*p_age_out -
+    (mat1[(i-1),3])*p_die
   # Cancer
-  mat1[i,4] <- (mat1[(i-1),4]) + #previous N people in cancer
-    (mat1[(i-1),3])*p_3_4 -      #progress from HSIL
-    (mat1[(i-1),4])*p_4_5 -      #die of cancer
-    (mat1[(i-1),4])*p_age_out -  #age out
-    (mat1[(i-1),4])*p_die        #die (other cause)
-  # Cumulative Cancer deaths
-  mat1[i,5] <- (mat1[(i-1),5]) + 
+  mat1[i,4] <- (mat1[(i-1),4]) +
+    (mat1[(i-1),3])*p_3_4 -   
+    (mat1[(i-1),4])*p_4_5 - 
+    (mat1[(i-1),4])*p_age_out -
+    (mat1[(i-1),4])*p_die
+  # Cancer deaths
+  mat1[i,5] <-
     (mat1[(i-1),4])*p_4_5        #progress from cancer
   
 }
