@@ -116,8 +116,8 @@ for(i in 2:t){
     (mat1[(i-1),5])*p_5_6 -      #progress from CIN3
     (mat1[(i-1),6])*p_6_7 -      #die
     (mat1[(i-1),6])*p_age_out        #age out
-  # Cumulative Cancer deaths
-  mat1[i,7] <- (mat1[(i-1),7]) + 
+  # Cancer deaths
+  mat1[i,7] <- 
     (mat1[(i-1),6])*p_6_7        #progress from cancer
   
 }
