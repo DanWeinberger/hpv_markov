@@ -85,14 +85,14 @@ profile <- function(p_1_2,p_2_1,p_2_3,p_3_2,p_3_4,p_4_5){
 
 ################### Run function with many inputs #######################
 
-## Either one uses too much memory :/
+## Would like to use seq by 0.01, but uses too much memory
 
-p_1_2_seq=seq(0.05,0.5,0.01) # Normal > LSIL
-p_2_1_seq=seq(0.3,0.7,0.01) # LSIL > normal
-p_2_3_seq=seq(0.1,0.4,0.01) # LSIL > HSIL
-p_3_2_seq=seq(0.1,0.4,0.01) # HSIL > LSIL
-p_3_4_seq=seq(0.04,0.4,0.01) # HSIL > Cancer
-p_4_5_seq=seq(0.01,0.5,0.01) # Cancer > cancer death
+p_1_2_seq=seq(0.05,0.5,0.05) # Normal > LSIL
+p_2_1_seq=seq(0.3,0.7,0.05) # LSIL > normal
+p_2_3_seq=seq(0.1,0.4,0.05) # LSIL > HSIL
+p_3_2_seq=seq(0.1,0.4,0.05) # HSIL > LSIL
+p_3_4_seq=seq(0.04,0.4,0.05) # HSIL > Cancer
+p_4_5_seq=seq(0.01,0.5,0.05) # Cancer > cancer death
 
 # Nested for loop?
 for(i in 1:length(p_1_2_seq)){
@@ -112,7 +112,14 @@ for(i in 1:length(p_1_2_seq)){
 # apply function?
 params <- expand.grid(p_1_2_seq,p_2_1_seq,p_2_3_seq,p_3_2_seq,p_3_4_seq,p_4_5_seq)
 # Need to change the names for this to work
-pmap(params, profile)
+library(purrr)
+pmap(params, profile(p_1_2=..1,p_2_1=..2,p_2_3=..3,p_3_2=..4,p_3_4=..5,p_4_5=..6))
+pmap(params, profile(p_1_2=p_1_2_seq,
+                     p_2_1=p_2_1_seq,
+                     p_2_3=p_2_3_seq,
+                     p_3_2=p_3_2_seq,
+                     p_3_4=p_3_4_seq,
+                     p_4_5=p_4_5_seq))
 
 
 
