@@ -139,19 +139,21 @@ p_4_5_seq=0.01 # Cancer > cancer death
 
 # Create empty vector here (or array - 5 dimensional, i, j, k, l, m)
 arr1 <- array(NA, dim=c(length(p_1_2_seq),length(p_2_1_seq),length(p_2_3_seq),length(p_3_2_seq),length(p_3_4_seq),length(p_4_5_seq)))
+arr1 <- array()
 
 # Fill in vector/array
 
 # Time start
 ptm <- proc.time()
 # Run for loop
-arr1 <- for(i in 1:length(p_1_2_seq)){
+for(i in 1:length(p_1_2_seq)){
   for(j in 1:length(p_2_1_seq)){
     for(k in 1:length(p_2_3_seq)){
       for(l in 1:length(p_3_2_seq)){
         for(m in 1:length(p_3_4_seq)){
           for(n in 1:length(p_4_5_seq)){
-            profile(p_1_2=i,p_2_1=j,p_2_3=k,p_3_2=l,p_3_4=m,p_4_5=n)
+            LL <- profile(p_1_2=i,p_2_1=j,p_2_3=k,p_3_2=l,p_3_4=m,p_4_5=n)
+            LL_sum <- sum(LL)
           }
         }
       }
