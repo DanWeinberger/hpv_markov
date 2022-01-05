@@ -138,8 +138,9 @@ p_4_5_seq=0.01 # Cancer > cancer death
 
 
 # Create empty vector here (or array - 5 dimensional, i, j, k, l, m)
-arr1 <- array(NA, dim=c(length(p_1_2_seq),length(p_2_1_seq),length(p_2_3_seq),length(p_3_2_seq),length(p_3_4_seq),length(p_4_5_seq)))
-arr1 <- array()
+#arr1 <- array(NA, dim=c(length(p_1_2_seq),length(p_2_1_seq),length(p_2_3_seq),length(p_3_2_seq),length(p_3_4_seq),length(p_4_5_seq)))
+
+LL <- c()
 
 # Fill in vector/array
 
@@ -152,8 +153,8 @@ for(i in 1:length(p_1_2_seq)){
       for(l in 1:length(p_3_2_seq)){
         for(m in 1:length(p_3_4_seq)){
           for(n in 1:length(p_4_5_seq)){
-            LL <- profile(p_1_2=i,p_2_1=j,p_2_3=k,p_3_2=l,p_3_4=m,p_4_5=n)
-            LL_sum <- sum(LL)
+            LL <- c(LL, sum(profile(p_1_2=p_1_2_seq[i],p_2_1=p_2_1_seq[j],p_2_3=p_2_3_seq[k],p_3_2=p_3_2_seq[l],p_3_4=p_3_4_seq[m],p_4_5=p_4_5_seq[n])))    
+
           }
         }
       }
