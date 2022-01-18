@@ -1,6 +1,6 @@
 ### MARKOV MODEL HPV DRAFT
 ## Gwen Oliver
-## Dec 30, 2021
+## Jan 7, 2021
 
 ### This model is for the undetected compartments ONLY
 
@@ -90,20 +90,22 @@ profile <- function(p_1_2,p_2_1,p_2_3,p_3_2,p_3_4,p_4_5){
 ################### Run function with many inputs #######################
 
 p_1_2_seq=seq(0.05,0.5,0.05) # Normal > LSIL
-p_2_1_seq=seq(0.4,0.7,0.05) # LSIL > normal
+#p_2_1_seq=seq(0.4,0.7,0.05) # LSIL > normal
+p_2_1_seq=seq(0.2,0.9,0.05) # LSIL > normal
 p_2_3_seq=seq(0.1,0.3,0.05) # LSIL > HSIL
-p_3_2_seq=seq(0.1,0.4,0.05) # HSIL > LSIL
-p_3_4_seq=seq(0.04,0.4,0.05) # HSIL > Cancer
-p_4_5_seq=seq(0.01,0.5,0.05) # Cancer > cancer death
+#p_3_2_seq=seq(0.1,0.4,0.05) # HSIL > LSIL
+#p_3_4_seq=seq(0.04,0.4,0.05) # HSIL > Cancer
+#p_4_5_seq=seq(0.01,0.5,0.05) # Cancer > cancer death
 
 #p_2_3_seq=0.02 # LSIL > HSIL
-#p_3_2_seq=0.2 # HSIL > LSIL
-#p_3_4_seq=0.04 # HSIL > Cancer
-#p_4_5_seq=0.01 # Cancer > cancer death
+p_3_2_seq=0.2 # HSIL > LSIL
+p_3_4_seq=0.04 # HSIL > Cancer
+p_4_5_seq=0.01 # Cancer > cancer death
 
 
 # Empty vector for function output
-LL <- c()
+LL <- array(NA, dim=c(length(p_1_2_seq),length(p_2_1_seq),length(p_2_3_seq),length(p_3_2_seq),length(p_3_4_seq),length(p_4_5_seq)))
+
 
 # Time start
 ptm <- proc.time()
@@ -114,7 +116,7 @@ for(i in 1:length(p_1_2_seq)){
       for(l in 1:length(p_3_2_seq)){
         for(m in 1:length(p_3_4_seq)){
           for(n in 1:length(p_4_5_seq)){
-            LL <- c(LL, sum(profile(p_1_2=p_1_2_seq[i],p_2_1=p_2_1_seq[j],p_2_3=p_2_3_seq[k],p_3_2=p_3_2_seq[l],p_3_4=p_3_4_seq[m],p_4_5=p_4_5_seq[n])))    
+            LL[i,j,k,l,l,n] <- sum(profile(p_1_2=p_1_2_seq[i],p_2_1=p_2_1_seq[j],p_2_3=p_2_3_seq[k],p_3_2=p_3_2_seq[l],p_3_4=p_3_4_seq[m],p_4_5=p_4_5_seq[n]))   
 
           }
         }
@@ -126,11 +128,18 @@ for(i in 1:length(p_1_2_seq)){
 proc.time() - ptm
 
 # Plot results
-plot(LL)
+plot(p_1_2_seq, LL[,1,1,1,1,1])
+plot(p_2_1_seq, LL[1,,1,1,1,1])
+plot(p_2_3_seq, LL[1,1,,1,1,1])
+plot(p_3_2_seq, LL[1,1,1,,1,1])
+plot(p_3_4_seq, LL[1,1,1,1,,1])
+plot(p_4_5_seq, LL[1,1,1,1,1,])
 
 # Identify maximum
 which(LL==max(LL))
 
+
+# 
 
 
 
