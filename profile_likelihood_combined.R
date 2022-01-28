@@ -13,8 +13,9 @@ profile <- function(norm_ulsil,ulsil_norm,ulsil_uhsil,uhsil_ulsil,uhsil_ucan){
   #### Starting parameters
   t = 1000
   N.states = 8
-  Pop_size = 154566548
-
+  #Pop_size = 154566548 #all women
+  Pop_size = 44978865 # women 18-39
+  
   #### Transition probabilities
 
   # aging into/out of cohort
@@ -171,13 +172,16 @@ profile <- function(norm_ulsil,ulsil_norm,ulsil_uhsil,uhsil_ulsil,uhsil_ucan){
 ################### Run function with many inputs #######################
 
 # Inputs
-norm_ulsil_seq <- 0.1
-#ulsil_norm_seq <- 0.5
-ulsil_uhsil_seq <- 0.18
+#norm_ulsil_seq <- 0.1
+ulsil_norm_seq <- 0.25
+ulsil_uhsil_seq <- 0.1
 uhsil_ulsil_seq <- 0.2
 uhsil_ucan_seq <- 0.04
 
-ulsil_norm_seq <- seq(0.2,1,0.05)
+norm_ulsil_seq <- seq(0.01,0.15,0.01)
+#ulsil_norm_seq <- seq(0.2,1,0.05)
+#ulsil_uhsil_seq <- seq(0.05,0.2,0.05)
+#uhsil_ulsil_seq <- seq(0.05,0.35,0.05) # This isn't working
 
 # Empty vector for function output
 LL <- array(NA, dim=c(length(norm_ulsil_seq),length(ulsil_norm_seq),length(ulsil_uhsil_seq),length(uhsil_ulsil_seq),length(uhsil_ucan_seq)))
@@ -204,5 +208,6 @@ for(i in 1:length(norm_ulsil_seq)){
 proc.time() - ptm
 
 # Plot results
-plot(ulsil_norm_seq, LL[1,,1,1,1])
+plot(norm_ulsil_seq, LL[,1,1,1,1])
+plot(ulsil_uhsil_seq, LL[1,1,,1,1])
 
