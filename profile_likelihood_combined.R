@@ -8,13 +8,16 @@
 
 # Profile likelihood estimation function
 
+#### Need to build in age groups - start with 3: 18-24, 25-29, 30-39
+
 profile <- function(norm_ulsil,ulsil_norm,ulsil_uhsil,uhsil_ulsil,uhsil_ucan){
 
   #### Starting parameters
   t = 1000
   N.states = 8
   #Pop_size = 154566548 #all women
-  Pop_size = 44978865 # women 18-39
+  Pop_size = 44978865*(1-0.032) # women 18-39*adjustment for hysterectomies
+  
   
   #### Transition probabilities
 
@@ -36,8 +39,8 @@ profile <- function(norm_ulsil,ulsil_norm,ulsil_uhsil,uhsil_ulsil,uhsil_ucan){
   norm_dlsil <- norm_ulsil
   dlsil_norm <- ulsil_norm
   dlsil_dhsil <- ulsil_uhsil
-  dhsil_dlsil <- 0.1
-  dhsil_dcan <- 0.01
+  dhsil_dlsil <-  uhsil_ulsil
+  dhsil_dcan <- uhsil_ucan
   dcan_dcandeath <- 0.1
 
   # treatment
@@ -172,16 +175,16 @@ profile <- function(norm_ulsil,ulsil_norm,ulsil_uhsil,uhsil_ulsil,uhsil_ucan){
 ################### Run function with many inputs #######################
 
 # Inputs
-#norm_ulsil_seq <- 0.1
-ulsil_norm_seq <- 0.25
-ulsil_uhsil_seq <- 0.1
-uhsil_ulsil_seq <- 0.2
+norm_ulsil_seq <- 0.01
+#ulsil_norm_seq <- 0.25
+#ulsil_uhsil_seq <- 0.1
+#uhsil_ulsil_seq <- 0.2
 uhsil_ucan_seq <- 0.04
 
-norm_ulsil_seq <- seq(0.01,0.15,0.01)
-#ulsil_norm_seq <- seq(0.2,1,0.05)
-#ulsil_uhsil_seq <- seq(0.05,0.2,0.05)
-#uhsil_ulsil_seq <- seq(0.05,0.35,0.05) # This isn't working
+#norm_ulsil_seq <- seq(0.01,0.21,0.05)
+ulsil_norm_seq <- seq(0.1,0.8,0.1)
+ulsil_uhsil_seq <- seq(0.1,0.4,0.05)
+uhsil_ulsil_seq <- seq(0.15,0.4,0.05)
 
 # Empty vector for function output
 LL <- array(NA, dim=c(length(norm_ulsil_seq),length(ulsil_norm_seq),length(ulsil_uhsil_seq),length(uhsil_ulsil_seq),length(uhsil_ucan_seq)))
@@ -196,8 +199,8 @@ for(i in 1:length(norm_ulsil_seq)){
     for(k in 1:length(ulsil_uhsil_seq)){
       for(l in 1:length(uhsil_ulsil_seq)){
         for(m in 1:length(uhsil_ucan_seq)){
-            LL[i,j,k,l,l] <- profile(norm_ulsil=norm_ulsil_seq[i],ulsil_norm=ulsil_norm_seq[j],ulsil_uhsil=ulsil_uhsil_seq[k],uhsil_ulsil=uhsil_ulsil_seq[l],uhsil_ucan=uhsil_ucan_seq[m])$LL
-            Results[,i,j,k,l,l] <- profile(norm_ulsil=norm_ulsil_seq[i],ulsil_norm=ulsil_norm_seq[j],ulsil_uhsil=ulsil_uhsil_seq[k],uhsil_ulsil=uhsil_ulsil_seq[l],uhsil_ucan=uhsil_ucan_seq[m])$Results
+            LL[i,j,k,l,m] <- profile(norm_ulsil=norm_ulsil_seq[i],ulsil_norm=ulsil_norm_seq[j],ulsil_uhsil=ulsil_uhsil_seq[k],uhsil_ulsil=uhsil_ulsil_seq[l],uhsil_ucan=uhsil_ucan_seq[m])$LL
+            Results[,i,j,k,l,m] <- profile(norm_ulsil=norm_ulsil_seq[i],ulsil_norm=ulsil_norm_seq[j],ulsil_uhsil=ulsil_uhsil_seq[k],uhsil_ulsil=uhsil_ulsil_seq[l],uhsil_ucan=uhsil_ucan_seq[m])$Results
             
         }
       }
@@ -207,7 +210,14 @@ for(i in 1:length(norm_ulsil_seq)){
 #Time end
 proc.time() - ptm
 
+# Determine which parameters maximize likelihood
+which(LL==max(LL), arr.ind=TRUE)
+
 # Plot results
 plot(norm_ulsil_seq, LL[,1,1,1,1])
+plot(ulsil_norm_seq, LL[1,,1,1,1])
 plot(ulsil_uhsil_seq, LL[1,1,,1,1])
+plot(uhsil_ulsil_seq, LL[1,1,1,,1])
 
+which(LL==max(LL))
+Results[]
