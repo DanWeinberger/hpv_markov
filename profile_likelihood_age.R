@@ -12,7 +12,8 @@ profile <- function(
   norm_ulsil_1,norm_ulsil_2,norm_ulsil_3,
   ulsil_norm_1,ulsil_norm_2_3,
   ulsil_uhsil_1,ulsil_uhsil_2_3,
-  uhsil_ulsil_1,uhsil_ulsil_2_3){
+  uhsil_ulsil_1,uhsil_ulsil_2_3,
+  dcan_dcandeath){
   
   #### Starting parameters
   t = 1000
@@ -35,15 +36,15 @@ profile <- function(
   p_die_2_3 <- 164/100000 # proportion dying age 25-39
   
   # undetected
-  norm_ulsil_1 <- 0.05
-  norm_ulsil_2 <- 0.03
-  norm_ulsil_3 <- 0.01
-  ulsil_norm_1 <- 0.60
-  ulsil_norm_2_3 <- 0.4
-  ulsil_uhsil_1 <- 0.14
-  ulsil_uhsil_2_3 <- 0.20
-  uhsil_ulsil_1 <- 0.62
-  uhsil_ulsil_2_3 <- 0.30
+  #norm_ulsil_1 <- 0.05
+  #norm_ulsil_2 <- 0.03
+  #norm_ulsil_3 <- 0.01
+  #ulsil_norm_1 <- 0.60
+  #ulsil_norm_2_3 <- 0.4
+  #ulsil_uhsil_1 <- 0.14
+  #ulsil_uhsil_2_3 <- 0.20
+  #uhsil_ulsil_1 <- 0.62
+  #uhsil_ulsil_2_3 <- 0.30
   uhsil_ucan <- 6.4/100000
   
   # detected
@@ -57,7 +58,7 @@ profile <- function(
   dhsil_dlsil_1 <-  uhsil_ulsil_1
   dhsil_dlsil_2_3 <-  uhsil_ulsil_2_3
   dhsil_dcan <- uhsil_ucan
-  dcan_dcandeath <- 0.1
+  #dcan_dcandeath <- 0.1
   
   # treatment
   dhsil_norm <- 0.9*0.9
@@ -329,20 +330,27 @@ profile <- function(
 ################### Run function with many inputs #######################
 
 # Inputs
-norm_ulsil_1_seq <- 0.05
-norm_ulsil_2_seq <- 0.03
+norm_ulsil_1_seq <- 0.10
+#norm_ulsil_1_seq <- seq(0.03,0.10,0.01)
+norm_ulsil_2_seq <- 0.02
+#norm_ulsil_2_seq <- seq(0.02,0.05,0.01)
 norm_ulsil_3_seq <- 0.01
+#norm_ulsil_3_seq <- seq(0.01,0.03,0.01)
 ulsil_norm_1_seq <- 0.60
 ulsil_norm_2_3_seq <- 0.4
 ulsil_uhsil_1_seq <- 0.14
-ulsil_uhsil_2_3_seq <- 0.20
+ulsil_uhsil_2_3_seq <- 0.35
+#ulsil_uhsil_2_3_seq <- seq(0.10,0.35,0.05)
 uhsil_ulsil_1_seq <- 0.62
-uhsil_ulsil_2_3_seq <- 0.30
+uhsil_ulsil_2_3_seq <- 0.20
+#uhsil_ulsil_2_3_seq <- seq(0.20,0.50,0.05)
+#dcan_dcandeath <- 0.1
+dcan_dcandeath_seq <- seq(0.05,0.40,0.05)
 
 # Empty vector for function output
-LL <- array(NA, dim=c(length(norm_ulsil_1_seq),length(norm_ulsil_2_seq),length(norm_ulsil_3_seq),length(ulsil_norm_1_seq),length(ulsil_norm_2_3_seq),length(ulsil_uhsil_1_seq),length(ulsil_uhsil_2_3_seq),length(uhsil_ulsil_1_seq),length(uhsil_ulsil_2_3_seq),3))
+LL <- array(NA, dim=c(length(norm_ulsil_1_seq),length(norm_ulsil_2_seq),length(norm_ulsil_3_seq),length(ulsil_norm_1_seq),length(ulsil_norm_2_3_seq),length(ulsil_uhsil_1_seq),length(ulsil_uhsil_2_3_seq),length(uhsil_ulsil_1_seq),length(uhsil_ulsil_2_3_seq), length(dcan_dcandeath_seq)))
 
-Results <- array(NA, dim=c(3,length(norm_ulsil_1_seq),length(norm_ulsil_2_seq),length(norm_ulsil_3_seq),length(ulsil_norm_1_seq),length(ulsil_norm_2_3_seq),length(ulsil_uhsil_1_seq),length(ulsil_uhsil_2_3_seq),length(uhsil_ulsil_1_seq),length(uhsil_ulsil_2_3_seq),3))
+Results <- array(NA, dim=c(3,length(norm_ulsil_1_seq),length(norm_ulsil_2_seq),length(norm_ulsil_3_seq),length(ulsil_norm_1_seq),length(ulsil_norm_2_3_seq),length(ulsil_uhsil_1_seq),length(ulsil_uhsil_2_3_seq),length(uhsil_ulsil_1_seq),length(uhsil_ulsil_2_3_seq),length(dcan_dcandeath_seq)))
 
 # Time start
 ptm <- proc.time()
@@ -358,11 +366,12 @@ for(i in 1:length(norm_ulsil_1_seq)){
             for(o in 1:length(ulsil_uhsil_2_3_seq)){
               for(p in 1:length(uhsil_ulsil_1_seq)){
                 for(q in 1:length(uhsil_ulsil_2_3_seq)){
+                  for(r in 1:length(dcan_dcandeath_seq)){
                   
-                  LL[i,j,k,l,m,n,o,p,q,3] <- profile(norm_ulsil_1=norm_ulsil_1_seq[i],norm_ulsil_2=norm_ulsil_2_seq[j],norm_ulsil_3=norm_ulsil_3_seq[k],ulsil_norm_1=ulsil_norm_1_seq[l],ulsil_norm_2_3=ulsil_norm_2_3_seq[m],ulsil_uhsil_1=ulsil_uhsil_1_seq[n],ulsil_uhsil_2_3=ulsil_uhsil_2_3_seq[o],uhsil_ulsil_1=uhsil_ulsil_1_seq[p],uhsil_ulsil_2_3=uhsil_ulsil_2_3_seq[q])$LL
-                  Results[,i,j,k,l,m,n,o,p,q,3] <- profile(norm_ulsil_1=norm_ulsil_1_seq[i],norm_ulsil_2=norm_ulsil_2_seq[j],norm_ulsil_3=norm_ulsil_3_seq[k],ulsil_norm_1=ulsil_norm_1_seq[l],ulsil_norm_2_3=ulsil_norm_2_3_seq[m],ulsil_uhsil_1=ulsil_uhsil_1_seq[n],ulsil_uhsil_2_3=ulsil_uhsil_2_3_seq[o],uhsil_ulsil_1=uhsil_ulsil_1_seq[p],uhsil_ulsil_2_3=uhsil_ulsil_2_3_seq[q])$Results
+                  LL[i,j,k,l,m,n,o,p,q,r] <- profile(norm_ulsil_1=norm_ulsil_1_seq[i],norm_ulsil_2=norm_ulsil_2_seq[j],norm_ulsil_3=norm_ulsil_3_seq[k],ulsil_norm_1=ulsil_norm_1_seq[l],ulsil_norm_2_3=ulsil_norm_2_3_seq[m],ulsil_uhsil_1=ulsil_uhsil_1_seq[n],ulsil_uhsil_2_3=ulsil_uhsil_2_3_seq[o],uhsil_ulsil_1=uhsil_ulsil_1_seq[p],uhsil_ulsil_2_3=uhsil_ulsil_2_3_seq[q],dcan_dcandeath=dcan_dcandeath_seq[r])$LL
+                  Results[,i,j,k,l,m,n,o,p,q,r] <- profile(norm_ulsil_1=norm_ulsil_1_seq[i],norm_ulsil_2=norm_ulsil_2_seq[j],norm_ulsil_3=norm_ulsil_3_seq[k],ulsil_norm_1=ulsil_norm_1_seq[l],ulsil_norm_2_3=ulsil_norm_2_3_seq[m],ulsil_uhsil_1=ulsil_uhsil_1_seq[n],ulsil_uhsil_2_3=ulsil_uhsil_2_3_seq[o],uhsil_ulsil_1=uhsil_ulsil_1_seq[p],uhsil_ulsil_2_3=uhsil_ulsil_2_3_seq[q],dcan_dcandeath=dcan_dcandeath_seq[r])$Results
                   
-                  
+                  }
                 }
               }
             }
@@ -378,15 +387,9 @@ proc.time() - ptm
 # Determine which parameters maximize likelihood
 which(LL==max(LL), arr.ind=TRUE)
 
-# Plot results
-plot(norm_ulsil_seq, LL[,1,1,1,1])
-plot(ulsil_norm_seq, LL[1,,1,1,1])
-plot(ulsil_uhsil_seq, LL[1,1,,1,1])
-plot(uhsil_ulsil_seq, LL[1,1,1,,1])
-
-which(LL==max(LL))
-Results[]
-
-LL<-profile(norm_ulsil_1=0.05,norm_ulsil_2=0.03,norm_ulsil_3=0.01,ulsil_norm_1=0.60,ulsil_norm_2_3=0.4,ulsil_uhsil_1=0.14,ulsil_uhsil_2_3=0.20,uhsil_ulsil_1=0.62,uhsil_ulsil_2_3=0.30)
+ # Plot results
+plot(norm_ulsil_1_seq, LL[,1,1,1,1,1,1,1,1])
+plot(ulsil_uhsil_2_3_seq, LL[1,1,1,1,1,1,,1,1])
+plot(dcan_dcandeath_seq, LL[1,1,1,1,1,1,1,1,1,])
 
 
