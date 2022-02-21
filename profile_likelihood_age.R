@@ -4,6 +4,9 @@
 
 ### COMBINED MODEL ###
 
+
+### This does NOT include hysterectomies!!
+
 ### Profile likelihood estimation with age stratification
 
 # Profile likelihood estimation function
