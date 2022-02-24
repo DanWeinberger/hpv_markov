@@ -66,8 +66,8 @@ profile <- function(
   #dcan_dcandeath <- 0.1
   
   # treatment
-  dhsil_norm <- 0.9*0.9
-  dcan_norm <- 0.5*1
+  dhsil_norm <- 0.9*0.9 # % success * % treated
+  dcan_norm <- 0.5*1 # % success (based on ~5 year survival) * % treated
   
   # BRFSS rates!!
   # screening
