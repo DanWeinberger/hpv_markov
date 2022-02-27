@@ -52,12 +52,13 @@
   dcan_dcandeath <- 0.35
   
   # treatment
-  dhsil_norm <- 0.9*0.9
-  dcan_norm <- 0.5*1
+  dhsil_norm <- 0.9*0.9 # % success * % treated
+  dcan_norm <- 0.5*1 # % success (based on ~5 year survival) * % treated
   
   # BRFSS rates!!
   # screening
-  ulsil_dlsil <- 0.41/3
+  #ulsil_dlsil <- 0.41/3
+  ulsil_dlsil <- 0.83/3
   uhsil_dhsil <- 0.83/3
   ucan_dcan <- 0.83/3
   
@@ -450,7 +451,8 @@
   
   # BRFSS rates!!
   # screening
-  ulsil_dlsil <- 0.41/3
+  #ulsil_dlsil <- 0.41/3
+  ulsil_dlsil <- 0.83/3
   uhsil_dhsil <- 0.83/3
   ucan_dcan <- 0.83/3
   
