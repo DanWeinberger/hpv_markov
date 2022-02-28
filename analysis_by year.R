@@ -1,6 +1,7 @@
 
 ## FINAL MODEL 2018 PARAMETERS ##
 
+library(ggplot2)
 
 ### UNVACCINATED ###
 
@@ -55,24 +56,6 @@ dcan_dcandeath <- 0.35
 dhsil_norm <- 0.9*0.9 # % success * % treated
 dcan_norm <- 0.5*1 # % success (based on ~5 year survival) * % treated
 
-# BRFSS rates!!
-# screening
-#ulsil_dlsil <- 0.83/3
-#uhsil_dhsil <- 0.83/3
-#ucan_dcan <- 0.83/3
-
-ulsil_dlsil <- ifelse(t<1000|t>1010,0.83/3,0)
-uhsil_dhsil <- ifelse(t<1000|t>1010,0.83/3,0)
-ucan_dcan <- ifelse(t<1000|t>1010,0.83/3,0)
-
-# loss to follow up
-#dlsil_uhsil <- 0.17/3
-#dhsil_ucan <- 0.17/3
-
-dlsil_uhsil <- ifelse(t<1000|t>1010,0.17/3,1)
-dhsil_ucan <- ifelse(t<1000|t>1010,0.17/3,1)
-
-
 # hysterectomies
 hyst_1 <- -log(0.99)/10
 hyst_2 <- -log(0.96)/10
@@ -86,7 +69,7 @@ suffix = seq(1:t)
 years = paste(prefix, suffix, sep=" ")
 
 # Create empty array
-arr1 = array(NA, dim=c(t, N.states, 4), dimnames=list(years, c("Normal","Undet_LSIL","Det_LSIL","Undet_HSIL","Det_HSIL","Undet_Cancer","Det_Cancer","Cancer Death"), c("18-20","21-24","25-29","30-39")))
+arr1 = array(NA, dim=c(t, N.states, 4), dimnames=list(years, c("Normal","Undet_LSIL","Det_LSIL","Undet_HSIL","Det_HSIL","Undet_Cancer","Det_Cancer","Cancer_Death"), c("18-20","21-24","25-29","30-39")))
 
 # Assign starting prevalence of each state
 prev1 = 0.8
@@ -104,6 +87,21 @@ arr1[1,,] <- rmultinom(1, Pop_size, prob=c(prev1,prev2,prev3,prev4,prev5,prev6,p
 
 # Run model
 for(i in 2:t){
+  
+  ########################### Variable rates ########################
+  
+  t.index <- i
+  
+  # screening
+  ulsil_dlsil <- ifelse(t.index<1000|t.index>1001,0.83/3,0)
+  uhsil_dhsil <- ifelse(t.index<1000|t.index>1001,0.83/3,0)
+  ucan_dcan <- ifelse(t.index<1000|t.index>1001,0.83/3,0)
+  
+  
+  # loss to follow up
+  dlsil_uhsil <- ifelse(t.index<1000|t.index>1010,0.17/3,1)
+  dhsil_ucan <- ifelse(t.index<1000|t.index>1010,0.17/3,1)
+  
   
   ########################### 18-20 ########################
   
@@ -402,6 +400,53 @@ Results <- final_result[c(5,7,8),]
 
 Results_3 <- final_result[c(5,6,8),]
 
+# Plot results
+
+result_2 <- as.data.frame(result)
+result_3 <- as.data.frame(tibble::rownames_to_column(result_2, "Year"))
+result_3$Year.No <- seq(1:t)
+
+
+p_Norm<-ggplot(result_3, aes(x=Year.No)) +
+  geom_line(aes(y=Normal), colour="red") + 
+  coord_cartesian(
+    xlim = c(1000,1030),
+    ylim = c(0,10000000))
+
+p_Norm
+
+
+p_LSIL<-ggplot(result_3, aes(x=Year.No)) +
+  geom_line(aes(y=Undet_LSIL), colour="red") + 
+  geom_line(aes(y=Det_LSIL), colour="blue") +
+  coord_cartesian(
+    xlim = c(1000,1030),
+    ylim = c(0,500000))
+
+p_LSIL
+
+
+p_HSIL<-ggplot(result_3, aes(x=Year.No)) +
+  geom_line(aes(y=Undet_HSIL), colour="red") + 
+  geom_line(aes(y=Det_HSIL), colour="blue") +
+  coord_cartesian(
+    xlim = NULL,
+    ylim = c(0,200000))
+
+p_HSIL
+
+
+p_Cancer<-ggplot(result_3, aes(x=Year.No)) +
+  geom_line(aes(y=Undet_Cancer), colour="red") + 
+  geom_line(aes(y=Det_Cancer), colour="blue") +
+  geom_line(aes(y=Cancer_Death), colour="black") +
+  coord_cartesian(
+    xlim = NULL,
+    ylim = c(0,30000))
+
+p_Cancer
+
+
 
 
 
@@ -429,9 +474,9 @@ p_die_1 <- 74/100000 # proportion dying age 18-24
 p_die_2_3 <- 164/100000 # proportion dying age 25-39
 
 # undetected
-ifelse(t<990, norm_ulsil_0 <- 0.15, norm_ulsil_0 <- 0.15*0.2)
-ifelse(t<990, norm_ulsil_1 <- 0.08, norm_ulsil_1 <- 0.08*0.2)
-ifelse(t<990, norm_ulsil_2 <- 0.02, norm_ulsil_2 <- 0.02*0.2)
+#ifelse(t<990, norm_ulsil_0 <- 0.15, norm_ulsil_0 <- 0.15*0.2)
+#ifelse(t<990, norm_ulsil_1 <- 0.08, norm_ulsil_1 <- 0.08*0.2)
+#ifelse(t<990, norm_ulsil_2 <- 0.02, norm_ulsil_2 <- 0.02*0.2)
 norm_ulsil_3 <- 0.01*0.1
 ulsil_norm_1 <- 0.60
 ulsil_norm_2_3 <- 0.4
@@ -501,6 +546,24 @@ arr1[1,,] <- rmultinom(1, Pop_size, prob=c(prev1,prev2,prev3,prev4,prev5,prev6,p
 
 # Run model
 for(i in 2:t){
+  
+  ########################### Variable rates ########################
+  
+  t.index <- i
+  
+  norm_ulsil_0 <- ifelse(t.index<990, 0.15, 0.15*0.2)
+  norm_ulsil_1 <- ifelse(t.index<990, 0.08, 0.08*0.2)
+  norm_ulsil_2 <- ifelse(t.index<990, 0.02, 0.02*0.2)
+  
+  # screening
+  #ulsil_dlsil <- ifelse(t.index<1000|t.index>1001,0.83/3,0)
+  #uhsil_dhsil <- ifelse(t.index<1000|t.index>1001,0.83/3,0)
+  #ucan_dcan <- ifelse(t.index<1000|t.index>1001,0.83/3,0)
+  
+  # loss to follow up
+  #dlsil_uhsil <- ifelse(t.index<1000|t.index>1010,0.17/3,1)
+  #dhsil_ucan <- ifelse(t.index<1000|t.index>1010,0.17/3,1)
+  
   
   ########################### 18-20 ########################
   
@@ -781,6 +844,59 @@ LL_2 <- sum(dpois(final_result[c(5,7,8),], c(196000*0.6,10510*0.6,3400*0.6), log
 Results_2 <- final_result_2[c(5,7,8),]
 
 Results_4 <- final_result_2[c(4,6,8),]
+
+
+# Plot results
+
+result_2 <- as.data.frame(result)
+result_3 <- as.data.frame(tibble::rownames_to_column(result_2, "Year"))
+result_3$Year.No <- seq(1:t)
+
+
+p_Norm<-ggplot(result_3, aes(x=Year.No)) +
+  geom_line(aes(y=Normal), colour="red") + 
+  coord_cartesian(
+    xlim = NULL,
+    ylim = c(0,10000000))
+
+p_Norm
+
+
+p_LSIL<-ggplot(result_3, aes(x=Year.No)) +
+  geom_line(aes(y=Undet_LSIL), colour="red") + 
+  geom_line(aes(y=Det_LSIL), colour="blue") +
+  coord_cartesian(
+    xlim = NULL,
+    ylim = c(0,500000))
+
+p_LSIL
+
+
+p_HSIL<-ggplot(result_3, aes(x=Year.No)) +
+  geom_line(aes(y=Undet_HSIL), colour="red") + 
+  geom_line(aes(y=Det_HSIL), colour="blue") +
+  coord_cartesian(
+    xlim = NULL,
+    ylim = c(0,200000))
+
+p_HSIL
+
+
+p_Cancer<-ggplot(result_3, aes(x=Year.No)) +
+  geom_line(aes(y=Undet_Cancer), colour="red") + 
+  geom_line(aes(y=Det_Cancer), colour="blue") +
+  geom_line(aes(y=Cancer_Death), colour="black") +
+  coord_cartesian(
+    xlim = NULL,
+    ylim = c(0,30000))
+
+p_Cancer
+
+
+
+
+
+
 
 
 ### COMBINED RESULTS ###

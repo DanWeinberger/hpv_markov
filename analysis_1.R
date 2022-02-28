@@ -10,7 +10,7 @@
 ### UNVACCINATED ###
 
 #### Starting parameters
-t = 12*500+12*30
+t = 12*500
   # 12*500 = burn-in (1-6000)
   # 12*30 = COVID + 30ish years (6001-6360)
 
@@ -408,15 +408,46 @@ LL <- sum(dpois(final_result[c(5,7,8),], c(196000*0.4,10510*0.4,3400*0.4), log=T
 Results <- final_result[c(5,7,8),]
 
 result_2 <- as.data.frame(result)
-result_3 <- tibble::rownames_to_column(result_2, "Months")
+result_3 <- as.data.frame(tibble::rownames_to_column(result_2, "Year"))
+result_3$Year.No <- seq(1:t)
 
-plot(5600:6360,result_3$Undet_Cancer[5600:6360])
+
+p_Norm<-ggplot(result_3, aes(x=Year.No)) +
+  geom_line(aes(y=Normal), colour="red") + 
+  coord_cartesian(
+    xlim = NULL,
+    ylim = c(0,10000000))
+
+p_Norm
+
+
+p_LSIL<-ggplot(result_3, aes(x=Year.No)) +
+  geom_line(aes(y=Undet_LSIL), colour="red") + 
+  geom_line(aes(y=Det_LSIL), colour="blue") +
+  coord_cartesian(
+    xlim = NULL,
+    ylim = c(0,500000))
+
+p_LSIL
+
+p_HSIL<-ggplot(result_3, aes(x=Year.No)) +
+  geom_line(aes(y=Undet_HSIL), colour="red") + 
+  geom_line(aes(y=Det_HSIL), colour="blue") +
+  coord_cartesian(
+    xlim = NULL,
+    ylim = c(0,200000))
+
+p_HSIL
+
+# Make vector of paramters from monthly vs annual model - should form line
+# Make dataframe - do operation vector 
+
 
 
 ### VACCINATED ###
 
 #### Starting parameters
-t = 12*500+12*30
+t = 12*500
   # 12*500 = burn-in (1-6000)
   # 12*30 = COVID + 30ish years (6001-6360)
 
@@ -794,3 +825,4 @@ Results_2 <- final_result_2[c(5,7,8),]
 Results_all = Results+Results_2
 
 Results_all
+
