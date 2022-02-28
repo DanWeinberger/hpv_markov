@@ -22,8 +22,8 @@ p_die <- 0.01
 # https://www.statista.com/statistics/241488/population-of-the-us-by-sex-and-age/
 
 
-p_1_2 <- 0.1 # normal > infected
-p_2_1 <- 0.5 # infected > normal
+p_1_2 <- 0.1 # normal > LSIL
+p_2_1 <- 0.5 # LSIL > normal
 
 p_2_3 <- 0.18  # LSIL > HSIL
 p_3_2 <- 0.2   # HSIL > LSIL

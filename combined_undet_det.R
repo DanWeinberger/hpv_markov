@@ -48,7 +48,7 @@ dlsil_uhsil <- 0.17/3
 dhsil_ucan <- 0.17/3
 
 
-
+profile.likelihood
 # Starting number in each state
 
 # Create years label
