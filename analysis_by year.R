@@ -1,5 +1,5 @@
 
-## FINAL MODEL 2018 PARAMETERS ##
+## FINAL MODEL 2016 PARAMETERS ##
 
 library(ggplot2)
 
@@ -93,14 +93,14 @@ for(i in 2:t){
   t.index <- i
   
   # screening
-  ulsil_dlsil <- ifelse(t.index<1000|t.index>1001,0.83/3,0)
-  uhsil_dhsil <- ifelse(t.index<1000|t.index>1001,0.83/3,0)
-  ucan_dcan <- ifelse(t.index<1000|t.index>1001,0.83/3,0)
+  ulsil_dlsil <- ifelse(t.index<1000|t.index>1000,0.83/3,(0.83/3)*0.6)
+  uhsil_dhsil <- ifelse(t.index<1000|t.index>1000,0.83/3,(0.83/3)*0.6)
+  ucan_dcan <- ifelse(t.index<1000|t.index>1000,0.83/3,(0.83/3)*0.6)
   
   
   # loss to follow up
-  dlsil_uhsil <- ifelse(t.index<1000|t.index>1010,0.17/3,1)
-  dhsil_ucan <- ifelse(t.index<1000|t.index>1010,0.17/3,1)
+  dlsil_uhsil <- ifelse(t.index<1000|t.index>1000,0.17/3,(0.17/3)*1.4)
+  dhsil_ucan <- ifelse(t.index<1000|t.index>1000,0.17/3,(0.17/3)*1.4)
   
   
   ########################### 18-20 ########################
@@ -407,48 +407,6 @@ result_3 <- as.data.frame(tibble::rownames_to_column(result_2, "Year"))
 result_3$Year.No <- seq(1:t)
 
 
-p_Norm<-ggplot(result_3, aes(x=Year.No)) +
-  geom_line(aes(y=Normal), colour="red") + 
-  coord_cartesian(
-    xlim = c(1000,1030),
-    ylim = c(0,10000000))
-
-p_Norm
-
-
-p_LSIL<-ggplot(result_3, aes(x=Year.No)) +
-  geom_line(aes(y=Undet_LSIL), colour="red") + 
-  geom_line(aes(y=Det_LSIL), colour="blue") +
-  coord_cartesian(
-    xlim = c(1000,1030),
-    ylim = c(0,500000))
-
-p_LSIL
-
-
-p_HSIL<-ggplot(result_3, aes(x=Year.No)) +
-  geom_line(aes(y=Undet_HSIL), colour="red") + 
-  geom_line(aes(y=Det_HSIL), colour="blue") +
-  coord_cartesian(
-    xlim = NULL,
-    ylim = c(0,200000))
-
-p_HSIL
-
-
-p_Cancer<-ggplot(result_3, aes(x=Year.No)) +
-  geom_line(aes(y=Undet_Cancer), colour="red") + 
-  geom_line(aes(y=Det_Cancer), colour="blue") +
-  geom_line(aes(y=Cancer_Death), colour="black") +
-  coord_cartesian(
-    xlim = NULL,
-    ylim = c(0,30000))
-
-p_Cancer
-
-
-
-
 
 ### VACCINATED ###
 
@@ -503,19 +461,6 @@ dcan_dcandeath <- 0.35
 dhsil_norm <- 0.9*0.9
 dcan_norm <- 0.5*1
 
-# BRFSS rates!!
-# screening
-ulsil_dlsil <- ifelse(t<1000|t>1010,0.83/3,0)
-uhsil_dhsil <- ifelse(t<1000|t>1010,0.83/3,0)
-ucan_dcan <- ifelse(t<1000|t>1010,0.83/3,0)
-
-# loss to follow up
-#dlsil_uhsil <- 0.17/3
-#dhsil_ucan <- 0.17/3
-
-dlsil_uhsil <- ifelse(t<1000|t>1010,0.17/3,1)
-dhsil_ucan <- ifelse(t<1000|t>1010,0.17/3,1)
-
 # hysterectomies
 hyst_1 <- -log(0.99)/10
 hyst_2 <- -log(0.96)/10
@@ -551,18 +496,18 @@ for(i in 2:t){
   
   t.index <- i
   
-  norm_ulsil_0 <- ifelse(t.index<990, 0.15, 0.15*0.2)
-  norm_ulsil_1 <- ifelse(t.index<990, 0.08, 0.08*0.2)
-  norm_ulsil_2 <- ifelse(t.index<990, 0.02, 0.02*0.2)
+  norm_ulsil_0 <- ifelse(t.index<988, 0.15, 0.15*0.2)
+  norm_ulsil_1 <- ifelse(t.index<988, 0.08, 0.08*0.2)
+  norm_ulsil_2 <- ifelse(t.index<988, 0.02, 0.02*0.2)
   
   # screening
-  #ulsil_dlsil <- ifelse(t.index<1000|t.index>1001,0.83/3,0)
-  #uhsil_dhsil <- ifelse(t.index<1000|t.index>1001,0.83/3,0)
-  #ucan_dcan <- ifelse(t.index<1000|t.index>1001,0.83/3,0)
+  ulsil_dlsil <- ifelse(t.index<1000|t.index>1000,0.83/3,(0.83/3)*0.6)
+  uhsil_dhsil <- ifelse(t.index<1000|t.index>1000,0.83/3,(0.83/3)*0.6)
+  ucan_dcan <- ifelse(t.index<1000|t.index>1000,0.83/3,(0.83/3)*0.6)
   
   # loss to follow up
-  #dlsil_uhsil <- ifelse(t.index<1000|t.index>1010,0.17/3,1)
-  #dhsil_ucan <- ifelse(t.index<1000|t.index>1010,0.17/3,1)
+  dlsil_uhsil <- ifelse(t.index<1000|t.index>1000,0.17/3,(0.17/3)*1.4)
+  dhsil_ucan <- ifelse(t.index<1000|t.index>1000,0.17/3,(0.17/3)*1.4)
   
   
   ########################### 18-20 ########################
@@ -835,11 +780,11 @@ for(i in 2:t){
 arr1 <- round(arr1,0)
 
 # Vector of HSIL, cancer, and cancer death at steady state for iteration
-result_2 <- apply(arr1, 2L, rowSums)
-final_result_2 <- as.data.frame(result_2[nrow(result_2),])
+result_5 <- apply(arr1, 2L, rowSums)
+final_result_2 <- as.data.frame(result_5[nrow(result_5),])
 
 # Log likelihood of result vs predicted
-LL_2 <- sum(dpois(final_result[c(5,7,8),], c(196000*0.6,10510*0.6,3400*0.6), log=TRUE))
+LL_2 <- sum(dpois(final_result_2[c(5,7,8),], c(196000*0.6,10510*0.6,3400*0.6), log=TRUE))
 
 Results_2 <- final_result_2[c(5,7,8),]
 
@@ -848,66 +793,76 @@ Results_4 <- final_result_2[c(4,6,8),]
 
 # Plot results
 
-result_2 <- as.data.frame(result)
-result_3 <- as.data.frame(tibble::rownames_to_column(result_2, "Year"))
-result_3$Year.No <- seq(1:t)
+result_6 <- as.data.frame(result_5)
+result_7 <- as.data.frame(tibble::rownames_to_column(result_6, "Year"))
+result_7$Year.No <- seq(1:t)
 
 
-p_Norm<-ggplot(result_3, aes(x=Year.No)) +
+
+################### COMBINED RESULTS ###################
+
+Results_all = Results+Results_2 # final results
+
+result_tot <- result_3[,-1] + result_7[,-1]
+#View(result_tot)
+
+result_tot$Year.No <- result_tot$Year.No/2
+result_tot$Year <- result_tot$Year.No+(2008-987)
+
+
+# Normal
+p_Norm<-ggplot(result_tot, aes(x=Year)) +
   geom_line(aes(y=Normal), colour="red") + 
   coord_cartesian(
-    xlim = NULL,
-    ylim = c(0,10000000))
-
+    xlim = c(2000,2050),
+    ylim = c(10000000,15000000)) +
+  geom_vline(xintercept = 2008,linetype="dashed",alpha=0.3) +
+  geom_vline(xintercept = 2020,linetype="dashed",alpha=0.3)
 p_Norm
 
 
-p_LSIL<-ggplot(result_3, aes(x=Year.No)) +
+# LSIL
+p_LSIL<-ggplot(result_tot, aes(x=Year)) +
   geom_line(aes(y=Undet_LSIL), colour="red") + 
   geom_line(aes(y=Det_LSIL), colour="blue") +
   coord_cartesian(
-    xlim = NULL,
-    ylim = c(0,500000))
-
+    xlim = c(2000,2050),
+    ylim = c(0,1000000)) +
+  geom_vline(xintercept = 2008,linetype="dashed",alpha=0.3) +
+  geom_vline(xintercept = 2020,linetype="dashed",alpha=0.3)
 p_LSIL
 
 
-p_HSIL<-ggplot(result_3, aes(x=Year.No)) +
+# HSIL
+p_HSIL<-ggplot(result_tot, aes(x=Year)) +
   geom_line(aes(y=Undet_HSIL), colour="red") + 
   geom_line(aes(y=Det_HSIL), colour="blue") +
   coord_cartesian(
-    xlim = NULL,
-    ylim = c(0,200000))
-
+    xlim = c(2000,2050),
+    ylim = c(0,1000000)) +
+  geom_vline(xintercept = 2008,linetype="dashed",alpha=0.3) +
+  geom_vline(xintercept = 2020,linetype="dashed",alpha=0.3)
 p_HSIL
 
 
-p_Cancer<-ggplot(result_3, aes(x=Year.No)) +
+p_Cancer<-ggplot(result_tot, aes(x=Year)) +
   geom_line(aes(y=Undet_Cancer), colour="red") + 
   geom_line(aes(y=Det_Cancer), colour="blue") +
   geom_line(aes(y=Cancer_Death), colour="black") +
   coord_cartesian(
-    xlim = NULL,
-    ylim = c(0,30000))
-
+    xlim = c(2000,2050),
+    ylim = c(0,50000)) +
+  geom_vline(xintercept = 2008,linetype="dashed",alpha=0.3) +
+  geom_vline(xintercept = 2020,linetype="dashed",alpha=0.3)
 p_Cancer
 
 
+## Integration attempt
+
+test <- integrate(approxfun(result_tot$Year, result_tot$Undet_HSIL), 2020,2050)
+
+test <- integrate(splinefun(result_tot$Year, result_tot$Undet_HSIL), 2020,2050)
+# This gives lower absolute error
 
 
 
-
-
-
-### COMBINED RESULTS ###
-
-Results_all = Results+Results_2
-
-# [1] 179888   9910   3470
-# [1] 114211   6200   2171
-
-Results_all
-
-Results_all_undet <- Results_3+Results_4
-
-Results_all_undet
