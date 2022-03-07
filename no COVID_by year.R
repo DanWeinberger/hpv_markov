@@ -82,7 +82,7 @@ prev8 = 0
 
 # Assign starting states
 set.seed(123)
-arr1[1,,] <- rmultinom(1, Pop_size, prob=c(prev1,prev2,prev3,prev4,prev5,prev6,prev7,prev8)) 
+arr1[1,,] <- rmultinom(1, (Pop_size_1+Pop_size_2+Pop_size_3), prob=c(prev1,prev2,prev3,prev4,prev5,prev6,prev7,prev8)) 
 
 # Run model
 for(i in 2:t){
@@ -409,66 +409,9 @@ result_3_noCov$Year.No <- seq(1:t)
 ### VACCINATED ###
 
 #### Starting parameters
-t = 1030
-N.states = 8
-#Pop_size = 154566548 #all women
-#Pop_size = 44978865*(1-0.032) # women 18-39*adjustment for hysterectomies
 Pop_size_1 = 14683822*0.6
 Pop_size_2 = 10201392*0.6
 Pop_size_3 = 19939084*0.6
-
-# aging into cohort
-age_in <- (1/20) # multiply by pop under 18
-# aging up within cohort
-age_up_0 <- 1/3 # proportion turning 21
-age_up_1 <- 1/4 # proportion turning 25
-age_up_2 <- 1/5 # proportion turning 30
-# aging out of cohort
-age_out <- 1/10 # proportion turning 40
-# Dying
-p_die_1 <- 74/100000 # proportion dying age 18-24
-p_die_2_3 <- 164/100000 # proportion dying age 25-39
-
-# undetected
-#ifelse(t<990, norm_ulsil_0 <- 0.15, norm_ulsil_0 <- 0.15*0.2)
-#ifelse(t<990, norm_ulsil_1 <- 0.08, norm_ulsil_1 <- 0.08*0.2)
-#ifelse(t<990, norm_ulsil_2 <- 0.02, norm_ulsil_2 <- 0.02*0.2)
-norm_ulsil_3 <- 0.01*0.1
-ulsil_norm_1 <- 0.60
-ulsil_norm_2_3 <- 0.4
-ulsil_uhsil_1 <- 0.14
-ulsil_uhsil_2_3 <- 0.35
-uhsil_ulsil_1 <- 0.62
-uhsil_ulsil_2_3 <- 0.20
-uhsil_ucan <- 6.4/100000
-
-# detected
-norm_dlsil_1 <- norm_ulsil_1
-norm_dlsil_2 <- norm_ulsil_2
-norm_dlsil_3 <- norm_ulsil_3
-dlsil_norm_1 <- ulsil_norm_1
-dlsil_norm_2_3 <- ulsil_norm_2_3
-dlsil_dhsil_1 <- ulsil_uhsil_1
-dlsil_dhsil_2_3 <- ulsil_uhsil_2_3
-dhsil_dlsil_1 <-  uhsil_ulsil_1
-dhsil_dlsil_2_3 <-  uhsil_ulsil_2_3
-dhsil_dcan <- uhsil_ucan
-dcan_dcandeath <- 0.35
-
-# treatment
-dhsil_norm <- 0.9*0.9
-dcan_norm <- 0.5*1
-
-# hysterectomies
-hyst_1 <- -log(0.99)/10
-hyst_2 <- -log(0.96)/10
-
-# Starting number in each state
-
-# Create years label
-prefix = "Year"
-suffix = seq(1:t)
-years = paste(prefix, suffix, sep=" ")
 
 # Create empty array
 arr1 = array(NA, dim=c(t, N.states, 4), dimnames=list(years, c("Normal","Undet_LSIL","Det_LSIL","Undet_HSIL","Det_HSIL","Undet_Cancer","Det_Cancer","Cancer Death"), c("18-20","21-24","25-29","30-39")))
@@ -485,7 +428,7 @@ prev8 = 0
 
 # Assign starting states
 set.seed(123)
-arr1[1,,] <- rmultinom(1, Pop_size, prob=c(prev1,prev2,prev3,prev4,prev5,prev6,prev7,prev8)) 
+arr1[1,,] <- rmultinom(1, (Pop_size_1+Pop_size_2+Pop_size_3), prob=c(prev1,prev2,prev3,prev4,prev5,prev6,prev7,prev8)) 
 
 # Run model
 for(i in 2:t){
@@ -808,6 +751,12 @@ result_tot_noCov <- result_3_noCov[,-1] + result_7_noCov[,-1]
 result_tot_noCov$Year.No <- result_tot_noCov$Year.No/2
 result_tot_noCov$Year <- result_tot_noCov$Year.No+(2008-987)
 
+# Combined LSIL undetected and detected
+result_tot_noCov$All_LSIL <- result_tot_noCov$Undet_LSIL + result_tot_noCov$Det_LSIL
+# Combine HSIL undetected and detected
+result_tot_noCov$All_HSIL <- result_tot_noCov$Undet_HSIL + result_tot_noCov$Det_HSIL
+# Combined Cancer undetected and detected
+result_tot_noCov$All_Cancer <- result_tot_noCov$Undet_Cancer + result_tot_noCov$Det_Cancer
 
 # Normal
 p_Norm<-ggplot(data=result_tot, aes(x=Year)) +
@@ -815,7 +764,7 @@ p_Norm<-ggplot(data=result_tot, aes(x=Year)) +
   geom_line(data=result_tot, aes(y=Normal), colour="red") + 
   coord_cartesian(
     xlim = c(2000,2050),
-    ylim = c(0,20000000)) +
+    ylim = c(10000000,20000000)) +
   geom_vline(xintercept = 2008,linetype="dashed",alpha=0.3) +
   geom_vline(xintercept = 2020,linetype="dashed",alpha=0.3)
 p_Norm
@@ -827,11 +776,15 @@ p_LSIL<-ggplot(data=result_tot, aes(x=Year)) +
   geom_line(data=result_tot, aes(y=Undet_LSIL), colour="red") + 
   geom_line(data=result_tot_noCov, aes(y=Det_LSIL), colour="blue", alpha=0.5) +
   geom_line(data=result_tot, aes(y=Det_LSIL), colour="blue") +
+  geom_line(data=result_tot_noCov, aes(y=All_LSIL), colour="purple", alpha=0.5) +
+  geom_line(data=result_tot, aes(y=All_LSIL), colour="purple") +
   coord_cartesian(
     xlim = c(2000,2050),
-    ylim = c(0,1000000)) +
+    ylim = c(0,1500000)) +
   geom_vline(xintercept = 2008,linetype="dashed",alpha=0.3) +
-  geom_vline(xintercept = 2020,linetype="dashed",alpha=0.3)
+  geom_vline(xintercept = 2020,linetype="dashed",alpha=0.3) +
+  labs(y="LSIL Cases") +
+  scale_color_manual(breaks=c("Undetected","Detected","All","Undetected Baseline","Detected Basline","All Baseline"), values = c("Undetected"="red","Detected"="blue","All"="purple","Undetected Baseline"="red","Detected Basline"="blue","All Baseline"="purple"))
 p_LSIL
 
 
@@ -841,11 +794,14 @@ p_HSIL<-ggplot(data=result_tot, aes(x=Year)) +
   geom_line(data=result_tot, aes(y=Undet_HSIL), colour="red") + 
   geom_line(data=result_tot_noCov, aes(y=Det_HSIL), colour="blue", alpha=0.5) +
   geom_line(data=result_tot, aes(y=Det_HSIL), colour="blue") +
+  geom_line(data=result_tot_noCov, aes(y=All_HSIL), colour="purple", alpha=0.5) +
+  geom_line(data=result_tot, aes(y=All_HSIL), colour="purple") +
   coord_cartesian(
     xlim = c(2000,2050),
     ylim = c(0,500000)) +
   geom_vline(xintercept = 2008,linetype="dashed",alpha=0.3) +
-  geom_vline(xintercept = 2020,linetype="dashed",alpha=0.3)
+  geom_vline(xintercept = 2020,linetype="dashed",alpha=0.3) +
+  labs(y="HSIL Cases")
 p_HSIL
 
 
@@ -856,20 +812,35 @@ p_Cancer<-ggplot(data=result_tot, aes(x=Year)) +
   geom_line(data=result_tot, aes(y=Det_Cancer), colour="blue") +
   geom_line(data=result_tot_noCov, aes(y=Cancer_Death), colour="black", alpha=0.5) +
   geom_line(data=result_tot, aes(y=Cancer_Death), colour="black") +
+  geom_line(data=result_tot_noCov, aes(y=All_Cancer), colour="purple", alpha=0.5) +
+  geom_line(data=result_tot, aes(y=All_Cancer), colour="purple") +
   coord_cartesian(
     xlim = c(2000,2050),
-    ylim = c(0,40000)) +
+    ylim = c(0,50000)) +
   geom_vline(xintercept = 2008,linetype="dashed",alpha=0.3) +
   geom_vline(xintercept = 2020,linetype="dashed",alpha=0.3)
 p_Cancer
 
 
-## Integration attempt
+## Integration
 
-test <- integrate(approxfun(result_tot$Year, result_tot$Undet_HSIL), 2020,2050)
+HSIL_Cov <- integrate(splinefun(result_tot$Year, result_tot$Det_HSIL), 2020,2050)
+HSIL_noCov <- integrate(splinefun(result_tot_noCov$Year, result_tot_noCov$Det_HSIL), 2020,2050)
+HSIL_Cov
+HSIL_noCov
 
-test <- integrate(splinefun(result_tot$Year, result_tot$Undet_HSIL), 2020,2050)
-# This gives lower absolute error
+Undet_HSIL_Cov <- integrate(splinefun(result_tot$Year, result_tot$Undet_HSIL), 2020,2050)
+Undet_HSIL_noCov <- integrate(splinefun(result_tot_noCov$Year, result_tot_noCov$Undet_HSIL), 2020,2050)
+Undet_HSIL_Cov
+Undet_HSIL_noCov
+
+cancer_Cov <- integrate(splinefun(result_tot$Year, result_tot$Det_Cancer), 2020,2050)
+cancer_noCov <- integrate(splinefun(result_tot_noCov$Year, result_tot_noCov$Det_Cancer), 2020,2050)
+
+cancerdeath_Cov <- integrate(splinefun(result_tot$Year, result_tot$Cancer_Death), 2020,2050)
+cancerdeath_noCov <- integrate(splinefun(result_tot_noCov$Year, result_tot_noCov$Cancer_Death), 2020,2050)
+cancerdeath_Cov
+cancerdeath_noCov
 
 
 
