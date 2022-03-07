@@ -83,7 +83,7 @@ prev8 = 0
 
 # Assign starting states
 set.seed(123)
-arr1[1,,] <- rmultinom(1, Pop_size, prob=c(prev1,prev2,prev3,prev4,prev5,prev6,prev7,prev8)) 
+arr1[1,,] <- rmultinom(1, (Pop_size_1+Pop_size_2+Pop_size_3), prob=c(prev1,prev2,prev3,prev4,prev5,prev6,prev7,prev8)) 
 
 # Run model
 for(i in 2:t){
@@ -95,13 +95,13 @@ for(i in 2:t){
   # screening
   ulsil_dlsil <- ifelse(t.index<1000|t.index>1000,0.83/3,(0.83/3)*0.6)
   uhsil_dhsil <- ifelse(t.index<1000|t.index>1000,0.83/3,(0.83/3)*0.6)
-  ucan_dcan <- ifelse(t.index<1000|t.index>1000,0.83/3,(0.83/3)*0.6)
-  
+  #ucan_dcan <- ifelse(t.index<1000|t.index>1000,0.83/3,(0.83/3)*0.6)
+  ucan_dcan <- 0.83/3
   
   # loss to follow up
   dlsil_uhsil <- ifelse(t.index<1000|t.index>1000,0.17/3,(0.17/3)*1.4)
-  dhsil_ucan <- ifelse(t.index<1000|t.index>1000,0.17/3,(0.17/3)*1.4)
-  
+  #dhsil_ucan <- ifelse(t.index<1000|t.index>1000,0.17/3,(0.17/3)*1.4)
+  dhsil_ucan <- 0.17/3
   
   ########################### 18-20 ########################
   
@@ -411,66 +411,9 @@ result_3$Year.No <- seq(1:t)
 ### VACCINATED ###
 
 #### Starting parameters
-t = 1030
-N.states = 8
-#Pop_size = 154566548 #all women
-#Pop_size = 44978865*(1-0.032) # women 18-39*adjustment for hysterectomies
 Pop_size_1 = 14683822*0.6
 Pop_size_2 = 10201392*0.6
 Pop_size_3 = 19939084*0.6
-
-# aging into cohort
-age_in <- (1/20) # multiply by pop under 18
-# aging up within cohort
-age_up_0 <- 1/3 # proportion turning 21
-age_up_1 <- 1/4 # proportion turning 25
-age_up_2 <- 1/5 # proportion turning 30
-# aging out of cohort
-age_out <- 1/10 # proportion turning 40
-# Dying
-p_die_1 <- 74/100000 # proportion dying age 18-24
-p_die_2_3 <- 164/100000 # proportion dying age 25-39
-
-# undetected
-#ifelse(t<990, norm_ulsil_0 <- 0.15, norm_ulsil_0 <- 0.15*0.2)
-#ifelse(t<990, norm_ulsil_1 <- 0.08, norm_ulsil_1 <- 0.08*0.2)
-#ifelse(t<990, norm_ulsil_2 <- 0.02, norm_ulsil_2 <- 0.02*0.2)
-norm_ulsil_3 <- 0.01*0.1
-ulsil_norm_1 <- 0.60
-ulsil_norm_2_3 <- 0.4
-ulsil_uhsil_1 <- 0.14
-ulsil_uhsil_2_3 <- 0.35
-uhsil_ulsil_1 <- 0.62
-uhsil_ulsil_2_3 <- 0.20
-uhsil_ucan <- 6.4/100000
-
-# detected
-norm_dlsil_1 <- norm_ulsil_1
-norm_dlsil_2 <- norm_ulsil_2
-norm_dlsil_3 <- norm_ulsil_3
-dlsil_norm_1 <- ulsil_norm_1
-dlsil_norm_2_3 <- ulsil_norm_2_3
-dlsil_dhsil_1 <- ulsil_uhsil_1
-dlsil_dhsil_2_3 <- ulsil_uhsil_2_3
-dhsil_dlsil_1 <-  uhsil_ulsil_1
-dhsil_dlsil_2_3 <-  uhsil_ulsil_2_3
-dhsil_dcan <- uhsil_ucan
-dcan_dcandeath <- 0.35
-
-# treatment
-dhsil_norm <- 0.9*0.9
-dcan_norm <- 0.5*1
-
-# hysterectomies
-hyst_1 <- -log(0.99)/10
-hyst_2 <- -log(0.96)/10
-
-# Starting number in each state
-
-# Create years label
-prefix = "Year"
-suffix = seq(1:t)
-years = paste(prefix, suffix, sep=" ")
 
 # Create empty array
 arr1 = array(NA, dim=c(t, N.states, 4), dimnames=list(years, c("Normal","Undet_LSIL","Det_LSIL","Undet_HSIL","Det_HSIL","Undet_Cancer","Det_Cancer","Cancer Death"), c("18-20","21-24","25-29","30-39")))
@@ -487,7 +430,7 @@ prev8 = 0
 
 # Assign starting states
 set.seed(123)
-arr1[1,,] <- rmultinom(1, Pop_size, prob=c(prev1,prev2,prev3,prev4,prev5,prev6,prev7,prev8)) 
+arr1[1,,] <- rmultinom(1, (Pop_size_1+Pop_size_2+Pop_size_3), prob=c(prev1,prev2,prev3,prev4,prev5,prev6,prev7,prev8)) 
 
 # Run model
 for(i in 2:t){
@@ -503,12 +446,13 @@ for(i in 2:t){
   # screening
   ulsil_dlsil <- ifelse(t.index<1000|t.index>1000,0.83/3,(0.83/3)*0.6)
   uhsil_dhsil <- ifelse(t.index<1000|t.index>1000,0.83/3,(0.83/3)*0.6)
-  ucan_dcan <- ifelse(t.index<1000|t.index>1000,0.83/3,(0.83/3)*0.6)
+  #ucan_dcan <- ifelse(t.index<1000|t.index>1000,0.83/3,(0.83/3)*0.6)
+  ucan_dcan <- 0.83/3
   
   # loss to follow up
   dlsil_uhsil <- ifelse(t.index<1000|t.index>1000,0.17/3,(0.17/3)*1.4)
-  dhsil_ucan <- ifelse(t.index<1000|t.index>1000,0.17/3,(0.17/3)*1.4)
-  
+  #dhsil_ucan <- ifelse(t.index<1000|t.index>1000,0.17/3,(0.17/3)*1.4)
+  dhsil_ucan <- 0.17/3
   
   ########################### 18-20 ########################
   
@@ -809,13 +753,19 @@ result_tot <- result_3[,-1] + result_7[,-1]
 result_tot$Year.No <- result_tot$Year.No/2
 result_tot$Year <- result_tot$Year.No+(2008-987)
 
+# Combined LSIL undetected and detected
+result_tot$All_LSIL <- result_tot$Undet_LSIL + result_tot$Det_LSIL
+# Combine HSIL undetected and detected
+result_tot$All_HSIL <- result_tot$Undet_HSIL + result_tot$Det_HSIL
+# Combined Cancer undetected and detected 
+result_tot$All_Cancer <- result_tot$Undet_Cancer + result_tot$Det_Cancer
 
 # Normal
 p_Norm<-ggplot(result_tot, aes(x=Year)) +
   geom_line(aes(y=Normal), colour="red") + 
   coord_cartesian(
     xlim = c(2000,2050),
-    ylim = c(10000000,15000000)) +
+    ylim = c(15000000,20000000)) +
   geom_vline(xintercept = 2008,linetype="dashed",alpha=0.3) +
   geom_vline(xintercept = 2020,linetype="dashed",alpha=0.3)
 p_Norm

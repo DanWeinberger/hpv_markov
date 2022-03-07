@@ -3,9 +3,7 @@
 
 ## Time step = MONTH ##
 
-
-### INCLUDE LTFU
-
+library(ggplot2)
 
 ### UNVACCINATED ###
 
@@ -66,15 +64,6 @@ dcan_norm <- -log(1-0.5*1)/12
 ulsil_dlsil <- -log(1-0.83/3)/12
 uhsil_dhsil <- -log(1-0.83/3)/12
 ucan_dcan <- -log(1-0.83/3)/12
-
-#ulsil_dlsil <- ifelse(t<6000|t>6036,-log(1-0.41/3),0)
-#uhsil_dhsil <- ifelse(t<6000|t>6036,-log(1-0.83/3),0)
-#ucan_dcan <- ifelse(t<6000|t>6036,-log(1-0.83/3),0)
-
-#ulsil_dlsil <- ifelse(t<6000,-log(1-0.83/3),1)
-#uhsil_dhsil <- ifelse(t<6000,-log(1-0.83/3),1)
-#ucan_dcan <- ifelse(t<6000,-log(1-0.83/3),1)
-
 
 # loss to follow up
 dlsil_uhsil <- -log(1-0.17/3)/12
