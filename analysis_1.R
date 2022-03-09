@@ -401,33 +401,6 @@ result_3 <- as.data.frame(tibble::rownames_to_column(result_2, "Year"))
 result_3$Year.No <- seq(1:t)
 
 
-p_Norm<-ggplot(result_3, aes(x=Year.No)) +
-  geom_line(aes(y=Normal), colour="red") + 
-  coord_cartesian(
-    xlim = NULL,
-    ylim = c(0,10000000))
-
-p_Norm
-
-
-p_LSIL<-ggplot(result_3, aes(x=Year.No)) +
-  geom_line(aes(y=Undet_LSIL), colour="red") + 
-  geom_line(aes(y=Det_LSIL), colour="blue") +
-  coord_cartesian(
-    xlim = NULL,
-    ylim = c(0,500000))
-
-p_LSIL
-
-p_HSIL<-ggplot(result_3, aes(x=Year.No)) +
-  geom_line(aes(y=Undet_HSIL), colour="red") + 
-  geom_line(aes(y=Det_HSIL), colour="blue") +
-  coord_cartesian(
-    xlim = NULL,
-    ylim = c(0,200000))
-
-p_HSIL
-
 # Make vector of paramters from monthly vs annual model - should form line
 # Make dataframe - do operation vector 
 
@@ -808,10 +781,43 @@ LL_2 <- sum(dpois(final_result[c(5,7,8),], c(196000*0.6,10510*0.6,3400*0.6), log
 
 Results_2 <- final_result_2[c(5,7,8),]
 
+result_5 <- as.data.frame(result_2)
+result_6 <- as.data.frame(tibble::rownames_to_column(result_5, "Year"))
+result_6$Year.No <- seq(1:t)
+
+
 
 ### COMBINED RESULTS ###
 
-Results_all = Results+Results_2
+# THis doesn't work, don't know why
+Results_all = result_3+result_6
 
 Results_all
+
+p_Norm<-ggplot(Results_all, aes(x=Year.No)) +
+  geom_line(aes(y=Normal), colour="red") + 
+  coord_cartesian(
+    xlim = NULL,
+    ylim = c(0,10000000))
+
+p_Norm
+
+
+p_LSIL<-ggplot(result_3, aes(x=Year.No)) +
+  geom_line(aes(y=Undet_LSIL), colour="red") + 
+  geom_line(aes(y=Det_LSIL), colour="blue") +
+  coord_cartesian(
+    xlim = NULL,
+    ylim = c(0,500000))
+
+p_LSIL
+
+p_HSIL<-ggplot(result_3, aes(x=Year.No)) +
+  geom_line(aes(y=Undet_HSIL), colour="red") + 
+  geom_line(aes(y=Det_HSIL), colour="blue") +
+  coord_cartesian(
+    xlim = NULL,
+    ylim = c(0,200000))
+
+p_HSIL
 
