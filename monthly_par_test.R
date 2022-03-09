@@ -10,3 +10,4 @@ for(i in 1:length(pars)){
 pars_month
 
 plot(x=pars, y=pars_month)
+
