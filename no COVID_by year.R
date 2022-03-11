@@ -809,12 +809,12 @@ p_Cancer
 
 
 # Expected: 216000,11778,3663
-result_tot[which(result_tot$Year==2008),]
+result_tot_noCov[which(result_tot$Year==2008),]
 # Expected: 196000,10510,3400
-result_tot[which(result_tot$Year==2016),]
+result_tot_noCov[which(result_tot$Year==2016),]
 # 2050
-result_tot[which(result_tot$Year==2050),]
-result_tot_noCov[which(result_tot$Year==2050),]
+result_tot[which(result_tot$Year==2008),]
+result_tot[which(result_tot$Year==2016),]
 
 ## Integration
 
