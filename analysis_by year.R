@@ -3,6 +3,8 @@
 
 library(ggplot2)
 
+
+screen_decr <- function(decrease){
 #################### UNVACCINATED ####################
 
 #### Starting parameters ####
@@ -96,14 +98,14 @@ for(i in 2:t){
   t.index <- i
   
   # screening
-  ulsil_dlsil <- ifelse(t.index<1000|t.index>1000,0.83/3,(0.83/3)*0.6) # in the year 1000 (2020), screening drops 60%
-  uhsil_dhsil <- ifelse(t.index<1000|t.index>1000,0.83/3,(0.83/3)*0.6) # in the year 1000 (2020), screening drops 60%
+  ulsil_dlsil <- ifelse(t.index<1000|t.index>1000,0.83/3,(0.83/3)*decrease) # in the year 1000 (2020), screening drops 60%
+  uhsil_dhsil <- ifelse(t.index<1000|t.index>1000,0.83/3,(0.83/3)*decrease) # in the year 1000 (2020), screening drops 60%
   #ucan_dcan <- ifelse(t.index<1000|t.index>1000,0.83/3,(0.83/3)*0.6)
   ucan_dcan <- 0.83/3 # cancer screening does not change (symptomatic)
   
   # loss to follow up
-  dlsil_uhsil <- ifelse(t.index<1000|t.index>1000,0.17/3,(0.17/3)*1.4) # in the year 1000 (2020), LTFU increases 40%
-  dhsil_ucan <- ifelse(t.index<1000|t.index>1000,0.17/3,(0.17/3)*1.4) # in the year 1000 (2020), LTFU increases 40%
+  dlsil_uhsil <- ifelse(t.index<1000|t.index>1000,0.17/3,(0.17/3)*(1+decrease)) # in the year 1000 (2020), LTFU increases 40%
+  dhsil_ucan <- ifelse(t.index<1000|t.index>1000,0.17/3,(0.17/3)*(1+decrease)) # in the year 1000 (2020), LTFU increases 40%
   #dhsil_ucan <- 0.17/3 # cancer LTFU does not change
   
   ########################### 18-20 ########################
@@ -432,14 +434,14 @@ for(i in 2:t){
   norm_ulsil_2 <- ifelse(t.index<988, 0.02, 0.02*0.2) # starting in year 988 (2008), vaccination drops incidence by 80%
   
   # screening
-  ulsil_dlsil <- ifelse(t.index<1000|t.index>1000,0.83/3,(0.83/3)*0.6) # in the year 1000 (2020), screening drops 60%
-  uhsil_dhsil <- ifelse(t.index<1000|t.index>1000,0.83/3,(0.83/3)*0.6) # in the year 1000 (2020), screening drops 60%
+  ulsil_dlsil <- ifelse(t.index<1000|t.index>1000,0.83/3,(0.83/3)*decrease) # in the year 1000 (2020), screening drops 60%
+  uhsil_dhsil <- ifelse(t.index<1000|t.index>1000,0.83/3,(0.83/3)*decrease) # in the year 1000 (2020), screening drops 60%
   #ucan_dcan <- ifelse(t.index<1000|t.index>1000,0.83/3,(0.83/3)*0.6)
   ucan_dcan <- 0.83/3 # cancer screening does not change (symptomatic)
   
   # loss to follow up
-  dlsil_uhsil <- ifelse(t.index<1000|t.index>1000,0.17/3,(0.17/3)*1.4) # in the year 1000 (2020), LTFU increases 40%
-  dhsil_ucan <- ifelse(t.index<1000|t.index>1000,0.17/3,(0.17/3)*1.4) # in the year 1000 (2020), LTFU increases 40%
+  dlsil_uhsil <- ifelse(t.index<1000|t.index>1000,0.17/3,(0.17/3)*(1+decrease)) # in the year 1000 (2020), LTFU increases 40%
+  dhsil_ucan <- ifelse(t.index<1000|t.index>1000,0.17/3,(0.17/3)*(1+decrease)) # in the year 1000 (2020), LTFU increases 40%
   #dhsil_ucan <- 0.17/3 # cancer LTFU does not change
   
   ########################### 18-20 ########################
@@ -747,11 +749,23 @@ result_tot$All_HSIL <- result_tot$Undet_HSIL + result_tot$Det_HSIL
 # Combined Cancer undetected and detected 
 result_tot$All_Cancer <- result_tot$Undet_Cancer + result_tot$Det_Cancer
 
+return(result_tot)
+}
 
 ### Plots ###
 
+# Run model
+# 60% decrease in screening, 60% increase in LFTU
+screen_0.6 <- screen_decr(0.6)
+# 40% decrease in screening, 40% increase in LFTU
+screen_0.4 <- screen_decr(0.4)
+# 80% decrease in screening, 80% increase in LFTU
+screen_0.8 <- screen_decr(0.8)
+# rename
+result_tot <- screen_0.6
+
 # Normal
-p_Norm<-ggplot(result_tot, aes(x=Year)) +
+p_Norm<-ggplot(screen_0.6, aes(x=Year)) +
   geom_line(aes(y=Normal), colour="red") + 
   coord_cartesian(
     xlim = c(2000,2050),
@@ -762,38 +776,62 @@ p_Norm
 
 
 # LSIL
-p_LSIL<-ggplot(result_tot, aes(x=Year)) +
-  geom_line(aes(y=Undet_LSIL), colour="red", linetype="dashed") + 
-  geom_line(aes(y=Det_LSIL), colour="red") +
+p_LSIL<-ggplot(screen_0.6, aes(x=Year)) +
+  geom_line(data=screen_0.6, aes(y=Undet_LSIL), colour="red", linetype="dashed") + 
+  geom_line(data=screen_0.6, aes(y=Det_LSIL), colour="red") +
+  geom_line(data=screen_0.4, aes(y=Undet_LSIL), colour="red", alpha=0.1) + 
+  geom_line(data=screen_0.4, aes(y=Det_LSIL), colour="red", alpha=0.1) +
+  geom_line(data=screen_0.8, aes(y=Undet_LSIL), colour="red", alpha=0.1) + 
+  geom_line(data=screen_0.8, aes(y=Det_LSIL), colour="red", alpha=0.1) +
+  geom_ribbon(aes(ymin=screen_0.4$Undet_LSIL,ymax=screen_0.8$Undet_LSIL), fill="red", alpha=0.2) +
+  geom_ribbon(aes(ymin=screen_0.8$Det_LSIL,ymax=screen_0.4$Det_LSIL), fill="red", alpha=0.2) +
   coord_cartesian(
     xlim = c(2000,2050),
-    ylim = c(0,1000000)) +
+    ylim = c(250000,1000000)) +
   geom_vline(xintercept = 2008,linetype="dashed",alpha=0.3) +
-  geom_vline(xintercept = 2020,linetype="dashed",alpha=0.3)
+  geom_vline(xintercept = 2020,linetype="dashed",alpha=0.3) + 
+  labs(y="LSIL Cases")
 p_LSIL
 
 
 # HSIL
-p_HSIL<-ggplot(result_tot, aes(x=Year)) +
-  geom_line(aes(y=Undet_HSIL), colour="red", linetype="dashed") + 
-  geom_line(aes(y=Det_HSIL), colour="red") +
+p_HSIL<-ggplot(screen_0.6, aes(x=Year)) +
+  geom_line(data=screen_0.6, aes(y=Undet_HSIL), colour="red", linetype="dashed") + 
+  geom_line(data=screen_0.6, aes(y=Det_HSIL), colour="red") +
+  geom_line(data=screen_0.4, aes(y=Undet_HSIL), colour="red", alpha=0.1) + 
+  geom_line(data=screen_0.4, aes(y=Det_HSIL), colour="red", alpha=0.1) +
+  geom_line(data=screen_0.8, aes(y=Undet_HSIL), colour="red", alpha=0.1) + 
+  geom_line(data=screen_0.8, aes(y=Det_HSIL), colour="red", alpha=0.1) +
+  geom_ribbon(aes(ymin=screen_0.4$Undet_HSIL,ymax=screen_0.8$Undet_HSIL), fill="red", alpha=0.2) +
+  geom_ribbon(aes(ymin=screen_0.8$Det_HSIL,ymax=screen_0.4$Det_HSIL), fill="red", alpha=0.2) +
   coord_cartesian(
     xlim = c(2000,2050),
-    ylim = c(0,1000000)) +
+    ylim = c(0,400000)) +
   geom_vline(xintercept = 2008,linetype="dashed",alpha=0.3) +
-  geom_vline(xintercept = 2020,linetype="dashed",alpha=0.3)
+  geom_vline(xintercept = 2020,linetype="dashed",alpha=0.3) + 
+  labs(y="HSIL Cases")
 p_HSIL
 
 
-p_Cancer<-ggplot(result_tot, aes(x=Year)) +
+p_Cancer<-ggplot(screen_0.6, aes(x=Year)) +
   geom_line(aes(y=Undet_Cancer), colour="red", linetype="dashed") + 
   geom_line(aes(y=Det_Cancer), colour="red") +
   geom_line(aes(y=Cancer_Death), colour="red", linetype="dotted") +
+  geom_line(data=screen_0.4, aes(y=Undet_Cancer), colour="red", alpha=0.1) + 
+  geom_line(data=screen_0.4, aes(y=Det_Cancer), colour="red", alpha=0.1) +
+  geom_line(data=screen_0.4, aes(y=Cancer_Death), colour="red", alpha=0.1) +
+  geom_line(data=screen_0.8, aes(y=Undet_Cancer), colour="red", alpha=0.1) + 
+  geom_line(data=screen_0.8, aes(y=Det_Cancer), colour="red", alpha=0.1) +
+  geom_line(data=screen_0.8, aes(y=Cancer_Death), colour="red", alpha=0.1) +
+  geom_ribbon(aes(ymin=screen_0.4$Undet_Cancer,ymax=screen_0.8$Undet_Cancer), fill="red", alpha=0.2) +
+  geom_ribbon(aes(ymin=screen_0.8$Det_Cancer,ymax=screen_0.4$Det_Cancer), fill="red", alpha=0.2) +
+  geom_ribbon(aes(ymin=screen_0.8$Cancer_Death,ymax=screen_0.4$Cancer_Death), fill="red", alpha=0.2) +
   coord_cartesian(
     xlim = c(2000,2050),
     ylim = c(0,50000)) +
   geom_vline(xintercept = 2008,linetype="dashed",alpha=0.3) +
-  geom_vline(xintercept = 2020,linetype="dashed",alpha=0.3)
+  geom_vline(xintercept = 2020,linetype="dashed",alpha=0.3) +
+  labs(y="Cancer Cases/Deaths")
 p_Cancer
 
 
