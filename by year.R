@@ -28,29 +28,28 @@ screen_decr <- function(decrease){
   age_up_0 <- 1/3 # proportion turning 21
   age_up_1 <- 1/4 # proportion turning 25
   age_up_2 <- 1/5 # proportion turning 30
-  # aging out of cohort
   age_up_3 <- 1/10 # proportion turning 40
   # Dying
   die_1 <- 74/100000 # proportion dying age 18-24
   die_2_3 <- 164/100000 # proportion dying age 25-39
-  die_4 <- 1500/100000
+  die_4 <- 1500/100000 # proportion dying age 40+
   
   # undetected
   norm_ulsil_0 <- 0.15 # normal > undetected LSIL (18-20)
   norm_ulsil_1 <- 0.08 # normal > undetected LSIL (21-24)
   norm_ulsil_2 <- 0.02 # normal > undetected LSIL (25-29)
   norm_ulsil_3 <- 0.01 # normal > undetected LSIL (30-39)
-  norm_ulsil_4 <- 0
+  norm_ulsil_4 <- 0 # normal > undetected LSIL (40+)
   ulsil_norm_1 <- 0.60 # undetected LSIL > normal (18-24)
   ulsil_norm_2_3 <- 0.4 # undetected LSIL > normal (25-39)
   ulsil_uhsil_1 <- 0.14 # undetected LSIL > undetected HSIL (18-24)
   ulsil_uhsil_2_3 <- 0.30 # undetected LSIL > undetected HSIL (25-39)
-  ulsil_uhsil_4 <- 0.30
+  ulsil_uhsil_4 <- 0.30 # undetected LSIL > undetected HSIL (40+)
   uhsil_ulsil_1 <- 0.62 # undetected HSIL > undetected LSIL (18-24)
   uhsil_ulsil_2_3 <- 0.35 # undetected HSIL > undetected LSIL (25-39)
-  uhsil_ulsil_4 <- 0.30
-  uhsil_ucan_2_3 <- 6/100000 # undetected HSIL > undetected cancer
-  uhsil_ucan_4 <- 12/100000
+  uhsil_ulsil_4 <- 0.30 # undetected HSIL > undetected LSIL (40+)
+  uhsil_ucan_2_3 <- 6/100000 # undetected HSIL > undetected cancer (21-39)
+  uhsil_ucan_4 <- 12/100000 # undetected HSIL > undetected cancer (40+)
   
   # detected
   norm_dlsil_1 <- norm_ulsil_1 # normal > detected LSIL (21-24)
@@ -61,10 +60,10 @@ screen_decr <- function(decrease){
   dlsil_norm_2_3 <- ulsil_norm_2_3 # detected LSIL > normal (25-39)
   dlsil_dhsil_1 <- ulsil_uhsil_1 # detected LSIL > detected HSIL (21-24)
   dlsil_dhsil_2_3 <- ulsil_uhsil_2_3 # detected LSIL > detected HSIL (25-39)
-  dlsil_dhsil_4 <- ulsil_uhsil_4
+  dlsil_dhsil_4 <- ulsil_uhsil_4 # detected LSIL > detected HSIL (40+)
   dhsil_dlsil_1 <-  uhsil_ulsil_1 # detected HSIL > detected LSIL (21-24)
   dhsil_dlsil_2_3 <-  uhsil_ulsil_2_3 # detected HSIL > detected LSIL (25-39)
-  dhsil_dlsil_4 <-  uhsil_ulsil_4
+  dhsil_dlsil_4 <-  uhsil_ulsil_4 # detected HSIL > detected LSIL (40+)
   dhsil_dcan_2_3 <- uhsil_ucan_2_3 # detected HSIL > detected cancer
   dhsil_dcan_4 <- uhsil_ucan_4 # detected HSIL > detected cancer
   dcan_dcandeath <- 0.35 # detected cancer > detected cancer death
@@ -112,8 +111,8 @@ screen_decr <- function(decrease){
     t.index <- i
     
     # screening
-    ulsil_dlsil <- ifelse(t.index<1000|t.index>1000,0.83/3,(0.83/3)*decrease) # in the year 1000 (2020), screening drops 60%
-    uhsil_dhsil <- ifelse(t.index<1000|t.index>1000,0.83/3,(0.83/3)*decrease) # in the year 1000 (2020), screening drops 60%
+    ulsil_dlsil <- ifelse(t.index<1000|t.index>1000,0.83/3,(0.83/3)*(1-decrease)) # in the year 1000 (2020), screening drops 60%
+    uhsil_dhsil <- ifelse(t.index<1000|t.index>1000,0.83/3,(0.83/3)*(1-decrease)) # in the year 1000 (2020), screening drops 60%
     ucan_dcan <- 0.83/3 # cancer screening does not change (symptomatic)
   
     # loss to follow up
@@ -522,8 +521,8 @@ screen_decr <- function(decrease){
     norm_ulsil_2 <- ifelse(t.index<988, 0.02, 0.02*0.2) # starting in year 988 (2008), vaccination drops incidence by 80%
     
     # screening
-    ulsil_dlsil <- ifelse(t.index<1000|t.index>1000,0.83/3,(0.83/3)*decrease) # in the year 1000 (2020), screening drops 60%
-    uhsil_dhsil <- ifelse(t.index<1000|t.index>1000,0.83/3,(0.83/3)*decrease) # in the year 1000 (2020), screening drops 60%
+    ulsil_dlsil <- ifelse(t.index<1000|t.index>1000,0.83/3,(0.83/3)*(1-decrease)) # in the year 1000 (2020), screening drops 60%
+    uhsil_dhsil <- ifelse(t.index<1000|t.index>1000,0.83/3,(0.83/3)*(1-decrease)) # in the year 1000 (2020), screening drops 60%
     ucan_dcan <- 0.83/3 # cancer screening does not change (symptomatic)
   
     # loss to follow up
