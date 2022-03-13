@@ -480,7 +480,7 @@ analysis_byrace <- function(perc_race,screen,vax){
   
   
   
-  #################### UNVACCINATED ####################
+  #################### VACCINATED ####################
   
   # Population size
   # 154566548 = all women
