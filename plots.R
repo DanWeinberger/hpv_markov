@@ -212,7 +212,7 @@ p_HSIL_race<-ggplot(Results_white, aes(x=Year)) +
 p_HSIL_race
 
 
-p_Cancer_race<-ggplot(result_tot, aes(x=Year)) +
+p_Cancer_race<-ggplot(Results_white, aes(x=Year)) +
   geom_line(data=Results_white, aes(y=Undet_Cancer,color="non-Hispanic White",linetype="Undetected",alpha="Disruption")) + 
   geom_line(data=Results_white, aes(y=Det_Cancer,color="non-Hispanic White",linetype="Detected",alpha="Disruption")) +
   geom_line(data=Results_white, aes(y=Cancer_Death,color="non-Hispanic White",linetype="Cervical Cancer Death",alpha="Disruption")) +
