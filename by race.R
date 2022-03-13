@@ -1,5 +1,10 @@
 ## FINAL MODEL BY RACE ##
 
+
+# March 12
+
+
+
 library(ggplot2)
 
 # Create function
@@ -24,35 +29,44 @@ analysis_byrace <- function(perc_race,screen,vax){
   age_up_1 <- 1/4 # proportion turning 25
   age_up_2 <- 1/5 # proportion turning 30
   # aging out of cohort
-  age_out <- 1/10 # proportion turning 40
+  age_up_3 <- 1/10 # proportion turning 40
   # Dying
-  p_die_1 <- 74/100000 # proportion dying age 18-24
-  p_die_2_3 <- 164/100000 # proportion dying age 25-39
+  die_1 <- 74/100000 # proportion dying age 18-24
+  die_2_3 <- 164/100000 # proportion dying age 25-39
+  die_4 <- 1500/100000
   
   # undetected
   norm_ulsil_0 <- 0.15 # normal > undetected LSIL (18-20)
   norm_ulsil_1 <- 0.08 # normal > undetected LSIL (21-24)
   norm_ulsil_2 <- 0.02 # normal > undetected LSIL (25-29)
   norm_ulsil_3 <- 0.01 # normal > undetected LSIL (30-39)
+  norm_ulsil_4 <- 0
   ulsil_norm_1 <- 0.60 # undetected LSIL > normal (18-24)
   ulsil_norm_2_3 <- 0.4 # undetected LSIL > normal (25-39)
   ulsil_uhsil_1 <- 0.14 # undetected LSIL > undetected HSIL (18-24)
-  ulsil_uhsil_2_3 <- 0.35 # undetected LSIL > undetected HSIL (25-39)
+  ulsil_uhsil_2_3 <- 0.30 # undetected LSIL > undetected HSIL (25-39)
+  ulsil_uhsil_4 <- 0.30
   uhsil_ulsil_1 <- 0.62 # undetected HSIL > undetected LSIL (18-24)
-  uhsil_ulsil_2_3 <- 0.20 # undetected HSIL > undetected LSIL (25-39)
-  uhsil_ucan <- 6.4/100000 # undetected HSIL > undetected cancer
+  uhsil_ulsil_2_3 <- 0.35 # undetected HSIL > undetected LSIL (25-39)
+  uhsil_ulsil_4 <- 0.30
+  uhsil_ucan_2_3 <- 6/100000 # undetected HSIL > undetected cancer
+  uhsil_ucan_4 <- 12/100000
   
   # detected
   norm_dlsil_1 <- norm_ulsil_1 # normal > detected LSIL (21-24)
   norm_dlsil_2 <- norm_ulsil_2 # normal > detected LSIL (24-29)
   norm_dlsil_3 <- norm_ulsil_3 # normal > detected LSIL (30-39)
+  norm_dlsil_4 <- norm_ulsil_4 # normal > detected LSIL (40+)
   dlsil_norm_1 <- ulsil_norm_1 # detected LSIL > normal (21-24)
   dlsil_norm_2_3 <- ulsil_norm_2_3 # detected LSIL > normal (25-39)
   dlsil_dhsil_1 <- ulsil_uhsil_1 # detected LSIL > detected HSIL (21-24)
   dlsil_dhsil_2_3 <- ulsil_uhsil_2_3 # detected LSIL > detected HSIL (25-39)
+  dlsil_dhsil_4 <- ulsil_uhsil_4
   dhsil_dlsil_1 <-  uhsil_ulsil_1 # detected HSIL > detected LSIL (21-24)
   dhsil_dlsil_2_3 <-  uhsil_ulsil_2_3 # detected HSIL > detected LSIL (25-39)
-  dhsil_dcan <- uhsil_ucan # detected HSIL > detected cancer
+  dhsil_dlsil_4 <-  uhsil_ulsil_4
+  dhsil_dcan_2_3 <- uhsil_ucan_2_3 # detected HSIL > detected cancer
+  dhsil_dcan_4 <- uhsil_ucan_4 # detected HSIL > detected cancer
   dcan_dcandeath <- 0.35 # detected cancer > detected cancer death
   
   # treatment
@@ -62,6 +76,7 @@ analysis_byrace <- function(perc_race,screen,vax){
   # hysterectomies
   hyst_1 <- -log(0.99)/10 # hysterectomy 21-29 (normalized from 10 year rate > 1 year rate)
   hyst_2 <- -log(0.96)/10 # hysterectomy 30-39 (normalized from 10 year rate > 1 year rate)
+  hyst_3 <- -log(0.70)/10
   
   
   #### Create array ####
@@ -72,7 +87,7 @@ analysis_byrace <- function(perc_race,screen,vax){
   years = paste(prefix, suffix, sep=" ")
   
   # Create empty array
-  arr1 = array(NA, dim=c(t, N.states, 4), dimnames=list(years, c("Normal","Undet_LSIL","Det_LSIL","Undet_HSIL","Det_HSIL","Undet_Cancer","Det_Cancer","Cancer_Death"), c("18-20","21-24","25-29","30-39")))
+  arr1 = array(NA, dim=c(t, N.states, 5), dimnames=list(years, c("Normal","Undet_LSIL","Det_LSIL","Undet_HSIL","Det_HSIL","Undet_Cancer","Det_Cancer","Cancer_Death"), c("18-20","21-24","25-29","30-39","40+")))
   
   # Assign starting prevalence of each state
   prev1 = 0.8
@@ -86,7 +101,7 @@ analysis_byrace <- function(perc_race,screen,vax){
   
   # Assign starting states
   set.seed(123)
-  arr1[1,,] <- rmultinom(1, (Pop_size_1+Pop_size_2+Pop_size_3), prob=c(prev1,prev2,prev3,prev4,prev5,prev6,prev7,prev8)) 
+  arr1[1,,] <- rmultinom(1, (Pop_size_1+Pop_size_2+Pop_size_3+Pop_size_4), prob=c(prev1,prev2,prev3,prev4,prev5,prev6,prev7,prev8)) 
   
   
   ### Run model ###
@@ -104,7 +119,6 @@ analysis_byrace <- function(perc_race,screen,vax){
   
   # loss to follow up
   dlsil_uhsil <- ifelse(t.index<1000|t.index>1000,(1-screen),(1-screen)*1.4)
-  #dhsil_ucan <- ifelse(t.index<1000|t.index>1000,0.17/3,(0.17/3)*1.4)
   dhsil_ucan <- 1-screen
   
   ########################### 18-20 ########################
@@ -115,7 +129,7 @@ analysis_byrace <- function(perc_race,screen,vax){
     (arr1[(i-1),2,1])*ulsil_norm_1 -  # undetected LSIL regress to normal
     (arr1[(i-1),1,1])*norm_ulsil_1 -  # normal progress to undetected LSIL
     (arr1[(i-1),1,1])*age_up_0 -      # age up
-    (arr1[(i-1),1,1])*p_die_1         # die (unrelated)
+    (arr1[(i-1),1,1])*die_1         # die (unrelated)
   # LSIL undetected 18-20 (2)
   arr1[i,2,1] <- (arr1[(i-1),2,1]) +  
     (arr1[(i-1),1,1])*norm_ulsil_0 +  # normal progress to undetected LSIL
@@ -123,7 +137,7 @@ analysis_byrace <- function(perc_race,screen,vax){
     (arr1[(i-1),2,1])*ulsil_norm_1 -  # undetected LSIL regress to normal
     (arr1[(i-1),2,1])*ulsil_uhsil_1 - # undetected LSIL progress to undetected HSIL
     (arr1[(i-1),2,1])*age_up_0 -      # age up
-    (arr1[(i-1),2,1])*p_die_1         # die (unrelated)
+    (arr1[(i-1),2,1])*die_1         # die (unrelated)
   # LSIL detected 18-20 (3) = 0
   arr1[i,3,1] <- (arr1[(i-1),3,1])    # stay the same (0)
   # HSIL undetected 18-20 (4) 
@@ -131,7 +145,7 @@ analysis_byrace <- function(perc_race,screen,vax){
     (arr1[(i-1),2,1])*ulsil_uhsil_1 - # undetected LSIL progress to undetected HSIL 
     (arr1[(i-1),4,1])*uhsil_ulsil_1 - # undetected HSIL regress to undetected LSIL
     (arr1[(i-1),4,1])*age_up_0 -      # age up
-    (arr1[(i-1),4,1])*p_die_1         # die (unrelated)
+    (arr1[(i-1),4,1])*die_1         # die (unrelated)
   # HSIL detected 18-20 (5) = 0
   arr1[i,5,1] <- (arr1[(i-1),5,1])    # stay the same (0)
   # Cancer undetected 18-20 (6) = 0
@@ -153,7 +167,7 @@ analysis_byrace <- function(perc_race,screen,vax){
     (arr1[(i-1),1,2])*norm_dlsil_1 -  # normal progress to detected LSIL
     (arr1[(i-1),1,2])*age_up_1 -      # age up
     (arr1[(i-1),1,2])*hyst_1-         # hysterectomy
-    (arr1[(i-1),1,2])*p_die_1         # die (unrelated)
+    (arr1[(i-1),1,2])*die_1         # die (unrelated)
   # LSIL undetected 21-24 (2)
   arr1[i,2,2] <- (arr1[(i-1),2,2]) + 
     (arr1[(i-1),2,1])*age_up_0 +      # age up
@@ -164,7 +178,7 @@ analysis_byrace <- function(perc_race,screen,vax){
     (arr1[(i-1),2,2])*ulsil_dlsil -   # undetected LSIL screened to detected LSIL
     (arr1[(i-1),2,2])*age_up_1 -      # age up
     (arr1[(i-1),2,2])*hyst_1-         # hysterectomy
-    (arr1[(i-1),2,2])*p_die_1         # die (unrelated)
+    (arr1[(i-1),2,2])*die_1         # die (unrelated)
   # LSIL detected 21-24 (3)
   arr1[i,3,2] <- (arr1[(i-1),3,2]) + 
     (arr1[(i-1),3,1])*age_up_0 +      # age up
@@ -176,7 +190,7 @@ analysis_byrace <- function(perc_race,screen,vax){
     (arr1[(i-1),3,2])*dlsil_uhsil -   # detected LSIL LTFU to undetected HSIL
     (arr1[(i-1),3,2])*age_up_1 -      # age up
     (arr1[(i-1),3,2])*hyst_1-         # hysterectomy
-    (arr1[(i-1),3,2])*p_die_1         # die (unrelated)
+    (arr1[(i-1),3,2])*die_1         # die (unrelated)
   # HSIL undetected 21-24 (4) 
   arr1[i,4,2] <- (arr1[(i-1),4,2]) + 
     (arr1[(i-1),4,1])*age_up_0 +      # age up
@@ -186,7 +200,7 @@ analysis_byrace <- function(perc_race,screen,vax){
     (arr1[(i-1),4,2])*uhsil_dhsil -   # undetected HSIL screened to detected HSIL
     (arr1[(i-1),4,2])*age_up_1 -      # age up
     (arr1[(i-1),4,2])*hyst_1-         # hysterectomy
-    (arr1[(i-1),4,2])*p_die_1         # die (unrelated)
+    (arr1[(i-1),4,2])*die_1         # die (unrelated)
   # HSIL detected 21-24 (5)
   arr1[i,5,2] <- (arr1[(i-1),5,2]) + 
     (arr1[(i-1),5,1])*age_up_0 +      # age up
@@ -196,7 +210,7 @@ analysis_byrace <- function(perc_race,screen,vax){
     (arr1[(i-1),5,2])*dhsil_norm -    # detected HSIL treated to normal
     (arr1[(i-1),5,2])*age_up_1 -      # age up
     (arr1[(i-1),5,2])*hyst_1-         # hysterectomy
-    (arr1[(i-1),5,2])*p_die_1         # die (unrelated)
+    (arr1[(i-1),5,2])*die_1         # die (unrelated)
   # Cancer undetected 18-24 (6) = 0
   arr1[i,6,2] <- (arr1[(i-1),6,2])    # stay the same (0)
   # Cancer detected 18-24 (7) = 0
@@ -217,7 +231,7 @@ analysis_byrace <- function(perc_race,screen,vax){
     (arr1[(i-1),1,3])*norm_dlsil_2 -    # normal progress to detected LSIL
     (arr1[(i-1),1,3])*age_up_2 -        # age up 
     (arr1[(i-1),1,3])*hyst_1-           # hysterectomy
-    (arr1[(i-1),1,3])*p_die_2_3         # die (unrelated)
+    (arr1[(i-1),1,3])*die_2_3         # die (unrelated)
   # LSIL undetected 25-29 (2)
   arr1[i,2,3] <- (arr1[(i-1),2,3]) + 
     (arr1[(i-1),2,2])*age_up_1 +        # age up
@@ -228,7 +242,7 @@ analysis_byrace <- function(perc_race,screen,vax){
     (arr1[(i-1),2,3])*ulsil_dlsil -     # undetected LSIL screened to detected LSIL
     (arr1[(i-1),2,3])*age_up_2 -        # age up
     (arr1[(i-1),2,3])*hyst_1-           # hysterectomy
-    (arr1[(i-1),2,3])*p_die_2_3         # die (unrelated)
+    (arr1[(i-1),2,3])*die_2_3         # die (unrelated)
   # LSIL detected 25-29 (3)
   arr1[i,3,3] <- (arr1[(i-1),3,3]) + 
     (arr1[(i-1),3,2])*age_up_1 +        # age up
@@ -240,18 +254,18 @@ analysis_byrace <- function(perc_race,screen,vax){
     (arr1[(i-1),3,3])*dlsil_uhsil -     # detected LSIL LTFU to undetected HSIL
     (arr1[(i-1),3,3])*age_up_2 -        # age up
     (arr1[(i-1),3,3])*hyst_1-           # hysterectomy
-    (arr1[(i-1),3,3])*p_die_2_3         # die (unrelated)
+    (arr1[(i-1),3,3])*die_2_3         # die (unrelated)
   # HSIL undetected 25-29 (4) 
   arr1[i,4,3] <- (arr1[(i-1),4,3]) + 
     (arr1[(i-1),4,2])*age_up_1 +        # age up
     (arr1[(i-1),2,3])*ulsil_uhsil_2_3 + # undetected LSIL progress to undetected HSIL 
     (arr1[(i-1),3,3])*dlsil_uhsil -     # detected LSIL LTFU to undetected HSIL
     (arr1[(i-1),4,3])*uhsil_ulsil_2_3 - # undetected HSIL regress to undetected LSIL
-    (arr1[(i-1),4,3])*uhsil_ucan -      # undetected HSIL progress to undetected cancer
+    (arr1[(i-1),4,3])*uhsil_ucan_2_3 -      # undetected HSIL progress to undetected cancer
     (arr1[(i-1),4,3])*uhsil_dhsil -     # undetected HSIL screened to detected HSIL
     (arr1[(i-1),4,3])*age_up_2 -        # age up
     (arr1[(i-1),4,3])*hyst_1-           # hysterectomy
-    (arr1[(i-1),4,3])*p_die_2_3         # die (unrelated)
+    (arr1[(i-1),4,3])*die_2_3         # die (unrelated)
   # HSIL detected 25-29 (5)
   arr1[i,5,3] <- (arr1[(i-1),5,3]) + 
     (arr1[(i-1),5,2])*age_up_1 +        # age up
@@ -259,27 +273,27 @@ analysis_byrace <- function(perc_race,screen,vax){
     (arr1[(i-1),4,3])*uhsil_dhsil -     # undetected HSIL screened to detected HSIL
     (arr1[(i-1),5,3])*dhsil_dlsil_2_3 - # detected HSIL regress to detected LSIL
     (arr1[(i-1),5,3])*dhsil_ucan -      # detected HSIL LTFU to undetected cancer
-    (arr1[(i-1),5,3])*dhsil_dcan -      # detected HSIL progress to detected cancer
+    (arr1[(i-1),5,3])*dhsil_dcan_2_3 -      # detected HSIL progress to detected cancer
     (arr1[(i-1),5,3])*dhsil_norm -      # detected HSIL treated to normal
     (arr1[(i-1),5,3])*age_up_2 -        # age up
     (arr1[(i-1),5,3])*hyst_1-           # hysterectomy
-    (arr1[(i-1),5,3])*p_die_2_3         # die (unrelated)
+    (arr1[(i-1),5,3])*die_2_3         # die (unrelated)
   # Cancer undetected 25-29 (6)
   arr1[i,6,3] <- (arr1[(i-1),6,3]) +
-    (arr1[(i-1),4,3])*uhsil_ucan +      # undetected HSIL progress to undetected cancer
+    (arr1[(i-1),4,3])*uhsil_ucan_2_3 +      # undetected HSIL progress to undetected cancer
     (arr1[(i-1),5,3])*dhsil_ucan -      # detected HSIL LTFU to undetected cancer
     (arr1[(i-1),6,3])*ucan_dcan -       # undetected cancer screened to detected cancer
     (arr1[(i-1),6,3])*age_up_2 -        # age up
     (arr1[(i-1),6,3])*hyst_1-           # hysterectomy
-    (arr1[(i-1),6,3])*p_die_2_3         # die (unrelated)
+    (arr1[(i-1),6,3])*die_2_3         # die (unrelated)
   # Cancer detected 25-29 (7)
   arr1[i,7,3] <- (arr1[(i-1),7,3]) +
-    (arr1[(i-1),5,3])*dhsil_dcan +      # detected HSIL progress to detected cancer
+    (arr1[(i-1),5,3])*dhsil_dcan_2_3 +      # detected HSIL progress to detected cancer
     (arr1[(i-1),6,3])*ucan_dcan -       # undetected cancer screened to detected cancer
     (arr1[(i-1),7,3])*dcan_dcandeath -  # detected cancer progress to cancer death
     (arr1[(i-1),7,3])*dcan_norm -       # detected cancer treated to normal
     (arr1[(i-1),7,3])*age_up_2 -        # age out
-    (arr1[(i-1),7,3])*p_die_2_3         # die (unrelated)
+    (arr1[(i-1),7,3])*die_2_3         # die (unrelated)
   # Cancer deaths 25-29 (8)
   arr1[i,8,3] <-
     (arr1[(i-1),7,3])*dcan_dcandeath    # detected cancer progress to cancer death
@@ -295,10 +309,10 @@ analysis_byrace <- function(perc_race,screen,vax){
     (arr1[(i-1),3,4])*dlsil_norm_2_3 -  # detected LSIL regress to normal
     (arr1[(i-1),1,4])*norm_ulsil_3 -    # normal progress to undetected LSIL
     (arr1[(i-1),1,4])*norm_dlsil_3 -    # normal progress to detected LSIL
-    (arr1[(i-1),1,4])*age_out -         # age out
+    (arr1[(i-1),1,4])*age_up_3 -         # age out
     (arr1[(i-1),1,4])*hyst_2-           # hysterectomy
-    (arr1[(i-1),1,4])*p_die_2_3         # die (unrelated)
-  # LSIL undetected 25-39 (2)
+    (arr1[(i-1),1,4])*die_2_3         # die (unrelated)
+  # LSIL undetected 30-39 (2)
   arr1[i,2,4] <- (arr1[(i-1),2,4]) + 
     (arr1[(i-1),2,3])*age_up_2 +        # age up
     (arr1[(i-1),1,4])*norm_ulsil_3 +    # normal progress to undetected LSIL
@@ -306,10 +320,10 @@ analysis_byrace <- function(perc_race,screen,vax){
     (arr1[(i-1),2,4])*ulsil_norm_2_3 -  # undetected LSIL regress to normal
     (arr1[(i-1),2,4])*ulsil_uhsil_2_3 - # undetected LSIL progress to undetected HSIL
     (arr1[(i-1),2,4])*ulsil_dlsil -     # undetected LSIL screened to detected LSIL
-    (arr1[(i-1),2,4])*age_out -         # age out
+    (arr1[(i-1),2,4])*age_up_3 -         # age out
     (arr1[(i-1),2,4])*hyst_2-           # hysterectomy
-    (arr1[(i-1),2,4])*p_die_2_3         # die (unrelated)
-  # LSIL detected 25-39 (3)
+    (arr1[(i-1),2,4])*die_2_3         # die (unrelated)
+  # LSIL detected 30-39 (3)
   arr1[i,3,4] <- (arr1[(i-1),3,4]) + 
     (arr1[(i-1),3,3])*age_up_2 +        # age up
     (arr1[(i-1),1,4])*norm_dlsil_3 +    # normal progress to detected LSIL
@@ -318,53 +332,128 @@ analysis_byrace <- function(perc_race,screen,vax){
     (arr1[(i-1),3,4])*dlsil_norm_2_3 -  # detected LSIL regress to normal
     (arr1[(i-1),3,4])*dlsil_dhsil_2_3 - # detected LSIL progress to detected HSIL
     (arr1[(i-1),3,4])*dlsil_uhsil -     # detected LSIL LTFU to undetected HSIL
-    (arr1[(i-1),3,4])*age_out -         # age out
+    (arr1[(i-1),3,4])*age_up_3 -         # age out
     (arr1[(i-1),3,4])*hyst_2-           # hysterectomy
-    (arr1[(i-1),3,4])*p_die_2_3         # die (unrelated)
-  # HSIL undetected 25-39 (4) 
+    (arr1[(i-1),3,4])*die_2_3         # die (unrelated)
+  # HSIL undetected 30-39 (4) 
   arr1[i,4,4] <- (arr1[(i-1),4,4]) + 
     (arr1[(i-1),4,3])*age_up_2 +        # age up
     (arr1[(i-1),2,4])*ulsil_uhsil_2_3 + # undetected LSIL progress to undetected HSIL 
     (arr1[(i-1),3,4])*dlsil_uhsil -     # detected LSIL LTFU to undetected HSIL
     (arr1[(i-1),4,4])*uhsil_ulsil_2_3 - # undetected HSIL regress to undetected LSIL
-    (arr1[(i-1),4,4])*uhsil_ucan -      # undetected HSIL progress to undetected cancer
+    (arr1[(i-1),4,4])*uhsil_ucan_2_3 -      # undetected HSIL progress to undetected cancer
     (arr1[(i-1),4,4])*uhsil_dhsil -     # undetected HSIL screened to detected HSIL
-    (arr1[(i-1),4,4])*age_out -         # age out
+    (arr1[(i-1),4,4])*age_up_3 -         # age out
     (arr1[(i-1),4,4])*hyst_2-           # hysterectomy
-    (arr1[(i-1),4,4])*p_die_2_3         # die (unrelated)
-  # HSIL detected 25-39 (5)
+    (arr1[(i-1),4,4])*die_2_3         # die (unrelated)
+  # HSIL detected 30-39 (5)
   arr1[i,5,4] <- (arr1[(i-1),5,4]) + 
     (arr1[(i-1),5,3])*age_up_2 +        # age up
     (arr1[(i-1),3,4])*dlsil_dhsil_2_3 + # detected LSIL progress to detected HSIL
     (arr1[(i-1),4,4])*uhsil_dhsil -     # undetected HSIL screened to detected HSIL
     (arr1[(i-1),5,4])*dhsil_dlsil_2_3 - # detected HSIL regress to detected LSIL
     (arr1[(i-1),5,4])*dhsil_ucan -      # detected HSIL LTFU to undetected cancer
-    (arr1[(i-1),5,4])*dhsil_dcan -      # detected HSIL progress to detected cancer
+    (arr1[(i-1),5,4])*dhsil_dcan_2_3 -      # detected HSIL progress to detected cancer
     (arr1[(i-1),5,4])*dhsil_norm -      # detected HSIL treated to normal
-    (arr1[(i-1),5,4])*age_out -         # age out
+    (arr1[(i-1),5,4])*age_up_3 -         # age out
     (arr1[(i-1),5,4])*hyst_2-           # hysterectomy
-    (arr1[(i-1),5,4])*p_die_2_3         # die (unrelated)
+    (arr1[(i-1),5,4])*die_2_3         # die (unrelated)
   # Cancer undetected 25-39 (6)
   arr1[i,6,4] <- (arr1[(i-1),6,4]) +
-    (arr1[(i-1),6,4])*age_up_2 +        # age up
-    (arr1[(i-1),4,4])*uhsil_ucan +      # undetected HSIL progress to undetected cancer
+    (arr1[(i-1),6,3])*age_up_2 +        # age up
+    (arr1[(i-1),4,4])*uhsil_ucan_2_3 +      # undetected HSIL progress to undetected cancer
     (arr1[(i-1),5,4])*dhsil_ucan -      # detected HSIL LTFU to undetected cancer
     (arr1[(i-1),6,4])*ucan_dcan -       # undetected cancer screened to detected cancer
-    (arr1[(i-1),6,4])*age_out -         # age out
+    (arr1[(i-1),6,4])*age_up_3 -         # age out
     (arr1[(i-1),6,4])*hyst_2-           # hysterectomy
-    (arr1[(i-1),6,4])*p_die_2_3         # die (unrelated)
-  # Cancer detected 25-39 (7)
+    (arr1[(i-1),6,4])*die_2_3         # die (unrelated)
+  # Cancer detected 30-39 (7)
   arr1[i,7,4] <- (arr1[(i-1),7,4]) +
     (arr1[(i-1),7,3])*age_up_2 +        # age up
-    (arr1[(i-1),5,4])*dhsil_dcan +      # detected HSIL progress to detected cancer
+    (arr1[(i-1),5,4])*dhsil_dcan_2_3 +      # detected HSIL progress to detected cancer
     (arr1[(i-1),6,4])*ucan_dcan -       # undetected cancer screened to detected cancer
     (arr1[(i-1),7,4])*dcan_dcandeath -  # detected cancer progress to cancer death
     (arr1[(i-1),7,4])*dcan_norm -       # detected cancer treated to normal
-    (arr1[(i-1),7,4])*age_out -         # age out
-    (arr1[(i-1),7,4])*p_die_2_3         # die (unrelated)
+    (arr1[(i-1),7,4])*age_up_3 -         # age out
+    (arr1[(i-1),7,4])*die_2_3         # die (unrelated)
   # Cancer deaths 25-39 (8)
   arr1[i,8,4] <-
     (arr1[(i-1),7,4])*dcan_dcandeath    # detected cancer progress to cancer death
+  
+  ########################### 40+ ########################
+  
+  # Normal 40+ (1)
+  arr1[i,1,5] <- (arr1[(i-1),1,5]) +  
+    (arr1[(i-1),1,4])*age_up_3 +        # age up
+    (arr1[(i-1),2,5])*ulsil_norm_2_3 +  # undetected LSIL regress to normal
+    (arr1[(i-1),5,5])*dhsil_norm +      # detected HSIL treated to normal
+    (arr1[(i-1),7,5])*dcan_norm +       # detected cancer treated to normal
+    (arr1[(i-1),3,5])*dlsil_norm_2_3 -  # detected LSIL regress to normal
+    (arr1[(i-1),1,5])*norm_ulsil_4 -    # normal progress to undetected LSIL
+    (arr1[(i-1),1,5])*norm_dlsil_4 -    # normal progress to detected LSIL
+    (arr1[(i-1),1,5])*hyst_3-           # hysterectomy
+    (arr1[(i-1),1,5])*die_4         # die (unrelated)
+  # LSIL undetected 40+ (2)
+  arr1[i,2,5] <- (arr1[(i-1),2,5]) + 
+    (arr1[(i-1),2,4])*age_up_3 +        # age up
+    (arr1[(i-1),1,5])*norm_ulsil_4 +    # normal progress to undetected LSIL
+    (arr1[(i-1),4,5])*uhsil_ulsil_4 - # undetected HSIL regress to undetected LSIL
+    (arr1[(i-1),2,5])*ulsil_norm_2_3 -  # undetected LSIL regress to normal
+    (arr1[(i-1),2,5])*ulsil_uhsil_4 - # undetected LSIL progress to undetected HSIL
+    (arr1[(i-1),2,5])*ulsil_dlsil -     # undetected LSIL screened to detected LSIL
+    (arr1[(i-1),2,5])*hyst_3-           # hysterectomy
+    (arr1[(i-1),2,5])*die_4         # die (unrelated)
+  # LSIL detected 40+ (3)
+  arr1[i,3,5] <- (arr1[(i-1),3,5]) + 
+    (arr1[(i-1),3,4])*age_up_3 +        # age up
+    (arr1[(i-1),1,5])*norm_dlsil_4 +    # normal progress to detected LSIL
+    (arr1[(i-1),5,5])*dhsil_dlsil_4 + # detected HSIL regress to detected LSIL
+    (arr1[(i-1),2,5])*ulsil_dlsil -     # undetected LSIL screened to detected LSIL
+    (arr1[(i-1),3,5])*dlsil_norm_2_3 -  # detected LSIL regress to normal
+    (arr1[(i-1),3,5])*dlsil_dhsil_4 - # detected LSIL progress to detected HSIL
+    (arr1[(i-1),3,5])*dlsil_uhsil -     # detected LSIL LTFU to undetected HSIL
+    (arr1[(i-1),3,5])*hyst_3-           # hysterectomy
+    (arr1[(i-1),3,5])*die_4         # die (unrelated)
+  # HSIL undetected 40+ (4) 
+  arr1[i,4,5] <- (arr1[(i-1),4,5]) + 
+    (arr1[(i-1),4,4])*age_up_3 +        # age up
+    (arr1[(i-1),2,5])*ulsil_uhsil_4 + # undetected LSIL progress to undetected HSIL 
+    (arr1[(i-1),3,5])*dlsil_uhsil -     # detected LSIL LTFU to undetected HSIL
+    (arr1[(i-1),4,5])*uhsil_ulsil_4 - # undetected HSIL regress to undetected LSIL
+    (arr1[(i-1),4,5])*uhsil_ucan_2_3 -      # undetected HSIL progress to undetected cancer
+    (arr1[(i-1),4,5])*uhsil_dhsil -     # undetected HSIL screened to detected HSIL
+    (arr1[(i-1),4,5])*hyst_3-           # hysterectomy
+    (arr1[(i-1),4,5])*die_4         # die (unrelated)
+  # HSIL detected 40+ (5)
+  arr1[i,5,5] <- (arr1[(i-1),5,5]) + 
+    (arr1[(i-1),5,4])*age_up_3 +        # age up
+    (arr1[(i-1),3,5])*dlsil_dhsil_4 + # detected LSIL progress to detected HSIL
+    (arr1[(i-1),4,5])*uhsil_dhsil -     # undetected HSIL screened to detected HSIL
+    (arr1[(i-1),5,5])*dhsil_dlsil_4 - # detected HSIL regress to detected LSIL
+    (arr1[(i-1),5,5])*dhsil_ucan -      # detected HSIL LTFU to undetected cancer
+    (arr1[(i-1),5,5])*dhsil_dcan_4 -      # detected HSIL progress to detected cancer
+    (arr1[(i-1),5,5])*dhsil_norm -      # detected HSIL treated to normal
+    (arr1[(i-1),5,5])*hyst_3-           # hysterectomy
+    (arr1[(i-1),5,5])*die_4         # die (unrelated)
+  # Cancer undetected 40+ (6)
+  arr1[i,6,5] <- (arr1[(i-1),6,5]) +
+    (arr1[(i-1),6,4])*age_up_3 +        # age up
+    (arr1[(i-1),4,5])*uhsil_ucan_4 +      # undetected HSIL progress to undetected cancer
+    (arr1[(i-1),5,5])*dhsil_ucan -      # detected HSIL LTFU to undetected cancer
+    (arr1[(i-1),6,5])*ucan_dcan -       # undetected cancer screened to detected cancer
+    (arr1[(i-1),6,5])*hyst_3-           # hysterectomy
+    (arr1[(i-1),6,5])*die_4         # die (unrelated)
+  # Cancer detected 40+ (7)
+  arr1[i,7,5] <- (arr1[(i-1),7,5]) +
+    (arr1[(i-1),7,4])*age_up_3 +        # age up
+    (arr1[(i-1),5,5])*dhsil_dcan_4 +      # detected HSIL progress to detected cancer
+    (arr1[(i-1),6,5])*ucan_dcan -       # undetected cancer screened to detected cancer
+    (arr1[(i-1),7,5])*dcan_dcandeath -  # detected cancer progress to cancer death
+    (arr1[(i-1),7,5])*dcan_norm -       # detected cancer treated to normal
+    (arr1[(i-1),7,5])*die_4         # die (unrelated)
+  # Cancer deaths 25-39 (8)
+  arr1[i,8,5] <-
+    (arr1[(i-1),7,5])*dcan_dcandeath    # detected cancer progress to cancer death
   }
   
   arr1 <- round(arr1,0)
@@ -401,7 +490,7 @@ analysis_byrace <- function(perc_race,screen,vax){
 
   #### Create array ####
   
-  arr1 = array(NA, dim=c(t, N.states, 4), dimnames=list(years, c("Normal","Undet_LSIL","Det_LSIL","Undet_HSIL","Det_HSIL","Undet_Cancer","Det_Cancer","Cancer_Death"), c("18-20","21-24","25-29","30-39")))
+  arr1 = array(NA, dim=c(t, N.states, 5), dimnames=list(years, c("Normal","Undet_LSIL","Det_LSIL","Undet_HSIL","Det_HSIL","Undet_Cancer","Det_Cancer","Cancer_Death"), c("18-20","21-24","25-29","30-39","40+")))
   
   # Assign starting prevalence of each state
   prev1 = 0.8
@@ -415,7 +504,7 @@ analysis_byrace <- function(perc_race,screen,vax){
   
   # Assign starting states
   set.seed(123)
-  arr1[1,,] <- rmultinom(1, (Pop_size_1+Pop_size_2+Pop_size_3), prob=c(prev1,prev2,prev3,prev4,prev5,prev6,prev7,prev8)) 
+  arr1[1,,] <- rmultinom(1, (Pop_size_1+Pop_size_2+Pop_size_3+Pop_size_4), prob=c(prev1,prev2,prev3,prev4,prev5,prev6,prev7,prev8)) 
   
   
   ### Run model ###
@@ -446,7 +535,7 @@ analysis_byrace <- function(perc_race,screen,vax){
     (arr1[(i-1),2,1])*ulsil_norm_1 -  # undetected LSIL regress to normal
     (arr1[(i-1),1,1])*norm_ulsil_1 -  # normal progress to undetected LSIL
     (arr1[(i-1),1,1])*age_up_0 -      # age up
-    (arr1[(i-1),1,1])*p_die_1         # die (unrelated)
+    (arr1[(i-1),1,1])*die_1         # die (unrelated)
   # LSIL undetected 18-20 (2)
   arr1[i,2,1] <- (arr1[(i-1),2,1]) +  
     (arr1[(i-1),1,1])*norm_ulsil_0 +  # normal progress to undetected LSIL
@@ -454,7 +543,7 @@ analysis_byrace <- function(perc_race,screen,vax){
     (arr1[(i-1),2,1])*ulsil_norm_1 -  # undetected LSIL regress to normal
     (arr1[(i-1),2,1])*ulsil_uhsil_1 - # undetected LSIL progress to undetected HSIL
     (arr1[(i-1),2,1])*age_up_0 -      # age up
-    (arr1[(i-1),2,1])*p_die_1         # die (unrelated)
+    (arr1[(i-1),2,1])*die_1         # die (unrelated)
   # LSIL detected 18-20 (3) = 0
   arr1[i,3,1] <- (arr1[(i-1),3,1])    # stay the same (0)
   # HSIL undetected 18-20 (4) 
@@ -462,7 +551,7 @@ analysis_byrace <- function(perc_race,screen,vax){
     (arr1[(i-1),2,1])*ulsil_uhsil_1 - # undetected LSIL progress to undetected HSIL 
     (arr1[(i-1),4,1])*uhsil_ulsil_1 - # undetected HSIL regress to undetected LSIL
     (arr1[(i-1),4,1])*age_up_0 -      # age up
-    (arr1[(i-1),4,1])*p_die_1         # die (unrelated)
+    (arr1[(i-1),4,1])*die_1         # die (unrelated)
   # HSIL detected 18-20 (5) = 0
   arr1[i,5,1] <- (arr1[(i-1),5,1])    # stay the same (0)
   # Cancer undetected 18-20 (6) = 0
@@ -484,7 +573,7 @@ analysis_byrace <- function(perc_race,screen,vax){
     (arr1[(i-1),1,2])*norm_dlsil_1 -  # normal progress to detected LSIL
     (arr1[(i-1),1,2])*age_up_1 -      # age up
     (arr1[(i-1),1,2])*hyst_1-         # hysterectomy
-    (arr1[(i-1),1,2])*p_die_1         # die (unrelated)
+    (arr1[(i-1),1,2])*die_1         # die (unrelated)
   # LSIL undetected 21-24 (2)
   arr1[i,2,2] <- (arr1[(i-1),2,2]) + 
     (arr1[(i-1),2,1])*age_up_0 +      # age up
@@ -495,7 +584,7 @@ analysis_byrace <- function(perc_race,screen,vax){
     (arr1[(i-1),2,2])*ulsil_dlsil -   # undetected LSIL screened to detected LSIL
     (arr1[(i-1),2,2])*age_up_1 -      # age up
     (arr1[(i-1),2,2])*hyst_1-         # hysterectomy
-    (arr1[(i-1),2,2])*p_die_1         # die (unrelated)
+    (arr1[(i-1),2,2])*die_1         # die (unrelated)
   # LSIL detected 21-24 (3)
   arr1[i,3,2] <- (arr1[(i-1),3,2]) + 
     (arr1[(i-1),3,1])*age_up_0 +      # age up
@@ -507,7 +596,7 @@ analysis_byrace <- function(perc_race,screen,vax){
     (arr1[(i-1),3,2])*dlsil_uhsil -   # detected LSIL LTFU to undetected HSIL
     (arr1[(i-1),3,2])*age_up_1 -      # age up
     (arr1[(i-1),3,2])*hyst_1-         # hysterectomy
-    (arr1[(i-1),3,2])*p_die_1         # die (unrelated)
+    (arr1[(i-1),3,2])*die_1         # die (unrelated)
   # HSIL undetected 21-24 (4) 
   arr1[i,4,2] <- (arr1[(i-1),4,2]) + 
     (arr1[(i-1),4,1])*age_up_0 +      # age up
@@ -517,7 +606,7 @@ analysis_byrace <- function(perc_race,screen,vax){
     (arr1[(i-1),4,2])*uhsil_dhsil -   # undetected HSIL screened to detected HSIL
     (arr1[(i-1),4,2])*age_up_1 -      # age up
     (arr1[(i-1),4,2])*hyst_1-         # hysterectomy
-    (arr1[(i-1),4,2])*p_die_1         # die (unrelated)
+    (arr1[(i-1),4,2])*die_1         # die (unrelated)
   # HSIL detected 21-24 (5)
   arr1[i,5,2] <- (arr1[(i-1),5,2]) + 
     (arr1[(i-1),5,1])*age_up_0 +      # age up
@@ -527,7 +616,7 @@ analysis_byrace <- function(perc_race,screen,vax){
     (arr1[(i-1),5,2])*dhsil_norm -    # detected HSIL treated to normal
     (arr1[(i-1),5,2])*age_up_1 -      # age up
     (arr1[(i-1),5,2])*hyst_1-         # hysterectomy
-    (arr1[(i-1),5,2])*p_die_1         # die (unrelated)
+    (arr1[(i-1),5,2])*die_1         # die (unrelated)
   # Cancer undetected 18-24 (6) = 0
   arr1[i,6,2] <- (arr1[(i-1),6,2])    # stay the same (0)
   # Cancer detected 18-24 (7) = 0
@@ -548,7 +637,7 @@ analysis_byrace <- function(perc_race,screen,vax){
     (arr1[(i-1),1,3])*norm_dlsil_2 -    # normal progress to detected LSIL
     (arr1[(i-1),1,3])*age_up_2 -        # age up 
     (arr1[(i-1),1,3])*hyst_1-           # hysterectomy
-    (arr1[(i-1),1,3])*p_die_2_3         # die (unrelated)
+    (arr1[(i-1),1,3])*die_2_3         # die (unrelated)
   # LSIL undetected 25-29 (2)
   arr1[i,2,3] <- (arr1[(i-1),2,3]) + 
     (arr1[(i-1),2,2])*age_up_1 +        # age up
@@ -559,7 +648,7 @@ analysis_byrace <- function(perc_race,screen,vax){
     (arr1[(i-1),2,3])*ulsil_dlsil -     # undetected LSIL screened to detected LSIL
     (arr1[(i-1),2,3])*age_up_2 -        # age up
     (arr1[(i-1),2,3])*hyst_1-           # hysterectomy
-    (arr1[(i-1),2,3])*p_die_2_3         # die (unrelated)
+    (arr1[(i-1),2,3])*die_2_3         # die (unrelated)
   # LSIL detected 25-29 (3)
   arr1[i,3,3] <- (arr1[(i-1),3,3]) + 
     (arr1[(i-1),3,2])*age_up_1 +        # age up
@@ -571,18 +660,18 @@ analysis_byrace <- function(perc_race,screen,vax){
     (arr1[(i-1),3,3])*dlsil_uhsil -     # detected LSIL LTFU to undetected HSIL
     (arr1[(i-1),3,3])*age_up_2 -        # age up
     (arr1[(i-1),3,3])*hyst_1-           # hysterectomy
-    (arr1[(i-1),3,3])*p_die_2_3         # die (unrelated)
+    (arr1[(i-1),3,3])*die_2_3         # die (unrelated)
   # HSIL undetected 25-29 (4) 
   arr1[i,4,3] <- (arr1[(i-1),4,3]) + 
     (arr1[(i-1),4,2])*age_up_1 +        # age up
     (arr1[(i-1),2,3])*ulsil_uhsil_2_3 + # undetected LSIL progress to undetected HSIL 
     (arr1[(i-1),3,3])*dlsil_uhsil -     # detected LSIL LTFU to undetected HSIL
     (arr1[(i-1),4,3])*uhsil_ulsil_2_3 - # undetected HSIL regress to undetected LSIL
-    (arr1[(i-1),4,3])*uhsil_ucan -      # undetected HSIL progress to undetected cancer
+    (arr1[(i-1),4,3])*uhsil_ucan_2_3 -      # undetected HSIL progress to undetected cancer
     (arr1[(i-1),4,3])*uhsil_dhsil -     # undetected HSIL screened to detected HSIL
     (arr1[(i-1),4,3])*age_up_2 -        # age up
     (arr1[(i-1),4,3])*hyst_1-           # hysterectomy
-    (arr1[(i-1),4,3])*p_die_2_3         # die (unrelated)
+    (arr1[(i-1),4,3])*die_2_3         # die (unrelated)
   # HSIL detected 25-29 (5)
   arr1[i,5,3] <- (arr1[(i-1),5,3]) + 
     (arr1[(i-1),5,2])*age_up_1 +        # age up
@@ -590,27 +679,27 @@ analysis_byrace <- function(perc_race,screen,vax){
     (arr1[(i-1),4,3])*uhsil_dhsil -     # undetected HSIL screened to detected HSIL
     (arr1[(i-1),5,3])*dhsil_dlsil_2_3 - # detected HSIL regress to detected LSIL
     (arr1[(i-1),5,3])*dhsil_ucan -      # detected HSIL LTFU to undetected cancer
-    (arr1[(i-1),5,3])*dhsil_dcan -      # detected HSIL progress to detected cancer
+    (arr1[(i-1),5,3])*dhsil_dcan_2_3 -      # detected HSIL progress to detected cancer
     (arr1[(i-1),5,3])*dhsil_norm -      # detected HSIL treated to normal
     (arr1[(i-1),5,3])*age_up_2 -        # age up
     (arr1[(i-1),5,3])*hyst_1-           # hysterectomy
-    (arr1[(i-1),5,3])*p_die_2_3         # die (unrelated)
+    (arr1[(i-1),5,3])*die_2_3         # die (unrelated)
   # Cancer undetected 25-29 (6)
   arr1[i,6,3] <- (arr1[(i-1),6,3]) +
-    (arr1[(i-1),4,3])*uhsil_ucan +      # undetected HSIL progress to undetected cancer
+    (arr1[(i-1),4,3])*uhsil_ucan_2_3 +      # undetected HSIL progress to undetected cancer
     (arr1[(i-1),5,3])*dhsil_ucan -      # detected HSIL LTFU to undetected cancer
     (arr1[(i-1),6,3])*ucan_dcan -       # undetected cancer screened to detected cancer
     (arr1[(i-1),6,3])*age_up_2 -        # age up
     (arr1[(i-1),6,3])*hyst_1-           # hysterectomy
-    (arr1[(i-1),6,3])*p_die_2_3         # die (unrelated)
+    (arr1[(i-1),6,3])*die_2_3         # die (unrelated)
   # Cancer detected 25-29 (7)
   arr1[i,7,3] <- (arr1[(i-1),7,3]) +
-    (arr1[(i-1),5,3])*dhsil_dcan +      # detected HSIL progress to detected cancer
+    (arr1[(i-1),5,3])*dhsil_dcan_2_3 +      # detected HSIL progress to detected cancer
     (arr1[(i-1),6,3])*ucan_dcan -       # undetected cancer screened to detected cancer
     (arr1[(i-1),7,3])*dcan_dcandeath -  # detected cancer progress to cancer death
     (arr1[(i-1),7,3])*dcan_norm -       # detected cancer treated to normal
     (arr1[(i-1),7,3])*age_up_2 -        # age out
-    (arr1[(i-1),7,3])*p_die_2_3         # die (unrelated)
+    (arr1[(i-1),7,3])*die_2_3         # die (unrelated)
   # Cancer deaths 25-29 (8)
   arr1[i,8,3] <-
     (arr1[(i-1),7,3])*dcan_dcandeath    # detected cancer progress to cancer death
@@ -626,10 +715,10 @@ analysis_byrace <- function(perc_race,screen,vax){
     (arr1[(i-1),3,4])*dlsil_norm_2_3 -  # detected LSIL regress to normal
     (arr1[(i-1),1,4])*norm_ulsil_3 -    # normal progress to undetected LSIL
     (arr1[(i-1),1,4])*norm_dlsil_3 -    # normal progress to detected LSIL
-    (arr1[(i-1),1,4])*age_out -         # age out
+    (arr1[(i-1),1,4])*age_up_3 -         # age out
     (arr1[(i-1),1,4])*hyst_2-           # hysterectomy
-    (arr1[(i-1),1,4])*p_die_2_3         # die (unrelated)
-  # LSIL undetected 25-39 (2)
+    (arr1[(i-1),1,4])*die_2_3         # die (unrelated)
+  # LSIL undetected 30-39 (2)
   arr1[i,2,4] <- (arr1[(i-1),2,4]) + 
     (arr1[(i-1),2,3])*age_up_2 +        # age up
     (arr1[(i-1),1,4])*norm_ulsil_3 +    # normal progress to undetected LSIL
@@ -637,10 +726,10 @@ analysis_byrace <- function(perc_race,screen,vax){
     (arr1[(i-1),2,4])*ulsil_norm_2_3 -  # undetected LSIL regress to normal
     (arr1[(i-1),2,4])*ulsil_uhsil_2_3 - # undetected LSIL progress to undetected HSIL
     (arr1[(i-1),2,4])*ulsil_dlsil -     # undetected LSIL screened to detected LSIL
-    (arr1[(i-1),2,4])*age_out -         # age out
+    (arr1[(i-1),2,4])*age_up_3 -         # age out
     (arr1[(i-1),2,4])*hyst_2-           # hysterectomy
-    (arr1[(i-1),2,4])*p_die_2_3         # die (unrelated)
-  # LSIL detected 25-39 (3)
+    (arr1[(i-1),2,4])*die_2_3         # die (unrelated)
+  # LSIL detected 30-39 (3)
   arr1[i,3,4] <- (arr1[(i-1),3,4]) + 
     (arr1[(i-1),3,3])*age_up_2 +        # age up
     (arr1[(i-1),1,4])*norm_dlsil_3 +    # normal progress to detected LSIL
@@ -649,53 +738,128 @@ analysis_byrace <- function(perc_race,screen,vax){
     (arr1[(i-1),3,4])*dlsil_norm_2_3 -  # detected LSIL regress to normal
     (arr1[(i-1),3,4])*dlsil_dhsil_2_3 - # detected LSIL progress to detected HSIL
     (arr1[(i-1),3,4])*dlsil_uhsil -     # detected LSIL LTFU to undetected HSIL
-    (arr1[(i-1),3,4])*age_out -         # age out
+    (arr1[(i-1),3,4])*age_up_3 -         # age out
     (arr1[(i-1),3,4])*hyst_2-           # hysterectomy
-    (arr1[(i-1),3,4])*p_die_2_3         # die (unrelated)
-  # HSIL undetected 25-39 (4) 
+    (arr1[(i-1),3,4])*die_2_3         # die (unrelated)
+  # HSIL undetected 30-39 (4) 
   arr1[i,4,4] <- (arr1[(i-1),4,4]) + 
     (arr1[(i-1),4,3])*age_up_2 +        # age up
     (arr1[(i-1),2,4])*ulsil_uhsil_2_3 + # undetected LSIL progress to undetected HSIL 
     (arr1[(i-1),3,4])*dlsil_uhsil -     # detected LSIL LTFU to undetected HSIL
     (arr1[(i-1),4,4])*uhsil_ulsil_2_3 - # undetected HSIL regress to undetected LSIL
-    (arr1[(i-1),4,4])*uhsil_ucan -      # undetected HSIL progress to undetected cancer
+    (arr1[(i-1),4,4])*uhsil_ucan_2_3 -      # undetected HSIL progress to undetected cancer
     (arr1[(i-1),4,4])*uhsil_dhsil -     # undetected HSIL screened to detected HSIL
-    (arr1[(i-1),4,4])*age_out -         # age out
+    (arr1[(i-1),4,4])*age_up_3 -         # age out
     (arr1[(i-1),4,4])*hyst_2-           # hysterectomy
-    (arr1[(i-1),4,4])*p_die_2_3         # die (unrelated)
-  # HSIL detected 25-39 (5)
+    (arr1[(i-1),4,4])*die_2_3         # die (unrelated)
+  # HSIL detected 30-39 (5)
   arr1[i,5,4] <- (arr1[(i-1),5,4]) + 
     (arr1[(i-1),5,3])*age_up_2 +        # age up
     (arr1[(i-1),3,4])*dlsil_dhsil_2_3 + # detected LSIL progress to detected HSIL
     (arr1[(i-1),4,4])*uhsil_dhsil -     # undetected HSIL screened to detected HSIL
     (arr1[(i-1),5,4])*dhsil_dlsil_2_3 - # detected HSIL regress to detected LSIL
     (arr1[(i-1),5,4])*dhsil_ucan -      # detected HSIL LTFU to undetected cancer
-    (arr1[(i-1),5,4])*dhsil_dcan -      # detected HSIL progress to detected cancer
+    (arr1[(i-1),5,4])*dhsil_dcan_2_3 -      # detected HSIL progress to detected cancer
     (arr1[(i-1),5,4])*dhsil_norm -      # detected HSIL treated to normal
-    (arr1[(i-1),5,4])*age_out -         # age out
+    (arr1[(i-1),5,4])*age_up_3 -         # age out
     (arr1[(i-1),5,4])*hyst_2-           # hysterectomy
-    (arr1[(i-1),5,4])*p_die_2_3         # die (unrelated)
+    (arr1[(i-1),5,4])*die_2_3         # die (unrelated)
   # Cancer undetected 25-39 (6)
   arr1[i,6,4] <- (arr1[(i-1),6,4]) +
-    (arr1[(i-1),6,4])*age_up_2 +        # age up
-    (arr1[(i-1),4,4])*uhsil_ucan +      # undetected HSIL progress to undetected cancer
+    (arr1[(i-1),6,3])*age_up_2 +        # age up
+    (arr1[(i-1),4,4])*uhsil_ucan_2_3 +      # undetected HSIL progress to undetected cancer
     (arr1[(i-1),5,4])*dhsil_ucan -      # detected HSIL LTFU to undetected cancer
     (arr1[(i-1),6,4])*ucan_dcan -       # undetected cancer screened to detected cancer
-    (arr1[(i-1),6,4])*age_out -         # age out
+    (arr1[(i-1),6,4])*age_up_3 -         # age out
     (arr1[(i-1),6,4])*hyst_2-           # hysterectomy
-    (arr1[(i-1),6,4])*p_die_2_3         # die (unrelated)
-  # Cancer detected 25-39 (7)
+    (arr1[(i-1),6,4])*die_2_3         # die (unrelated)
+  # Cancer detected 30-39 (7)
   arr1[i,7,4] <- (arr1[(i-1),7,4]) +
     (arr1[(i-1),7,3])*age_up_2 +        # age up
-    (arr1[(i-1),5,4])*dhsil_dcan +      # detected HSIL progress to detected cancer
+    (arr1[(i-1),5,4])*dhsil_dcan_2_3 +      # detected HSIL progress to detected cancer
     (arr1[(i-1),6,4])*ucan_dcan -       # undetected cancer screened to detected cancer
     (arr1[(i-1),7,4])*dcan_dcandeath -  # detected cancer progress to cancer death
     (arr1[(i-1),7,4])*dcan_norm -       # detected cancer treated to normal
-    (arr1[(i-1),7,4])*age_out -         # age out
-    (arr1[(i-1),7,4])*p_die_2_3         # die (unrelated)
+    (arr1[(i-1),7,4])*age_up_3 -         # age out
+    (arr1[(i-1),7,4])*die_2_3         # die (unrelated)
   # Cancer deaths 25-39 (8)
   arr1[i,8,4] <-
     (arr1[(i-1),7,4])*dcan_dcandeath    # detected cancer progress to cancer death
+  
+  ########################### 40+ ########################
+  
+  # Normal 40+ (1)
+  arr1[i,1,5] <- (arr1[(i-1),1,5]) +  
+    (arr1[(i-1),1,4])*age_up_3 +        # age up
+    (arr1[(i-1),2,5])*ulsil_norm_2_3 +  # undetected LSIL regress to normal
+    (arr1[(i-1),5,5])*dhsil_norm +      # detected HSIL treated to normal
+    (arr1[(i-1),7,5])*dcan_norm +       # detected cancer treated to normal
+    (arr1[(i-1),3,5])*dlsil_norm_2_3 -  # detected LSIL regress to normal
+    (arr1[(i-1),1,5])*norm_ulsil_4 -    # normal progress to undetected LSIL
+    (arr1[(i-1),1,5])*norm_dlsil_4 -    # normal progress to detected LSIL
+    (arr1[(i-1),1,5])*hyst_3-           # hysterectomy
+    (arr1[(i-1),1,5])*die_4         # die (unrelated)
+  # LSIL undetected 40+ (2)
+  arr1[i,2,5] <- (arr1[(i-1),2,5]) + 
+    (arr1[(i-1),2,4])*age_up_3 +        # age up
+    (arr1[(i-1),1,5])*norm_ulsil_4 +    # normal progress to undetected LSIL
+    (arr1[(i-1),4,5])*uhsil_ulsil_4 - # undetected HSIL regress to undetected LSIL
+    (arr1[(i-1),2,5])*ulsil_norm_2_3 -  # undetected LSIL regress to normal
+    (arr1[(i-1),2,5])*ulsil_uhsil_4 - # undetected LSIL progress to undetected HSIL
+    (arr1[(i-1),2,5])*ulsil_dlsil -     # undetected LSIL screened to detected LSIL
+    (arr1[(i-1),2,5])*hyst_3-           # hysterectomy
+    (arr1[(i-1),2,5])*die_4         # die (unrelated)
+  # LSIL detected 40+ (3)
+  arr1[i,3,5] <- (arr1[(i-1),3,5]) + 
+    (arr1[(i-1),3,4])*age_up_3 +        # age up
+    (arr1[(i-1),1,5])*norm_dlsil_4 +    # normal progress to detected LSIL
+    (arr1[(i-1),5,5])*dhsil_dlsil_4 + # detected HSIL regress to detected LSIL
+    (arr1[(i-1),2,5])*ulsil_dlsil -     # undetected LSIL screened to detected LSIL
+    (arr1[(i-1),3,5])*dlsil_norm_2_3 -  # detected LSIL regress to normal
+    (arr1[(i-1),3,5])*dlsil_dhsil_4 - # detected LSIL progress to detected HSIL
+    (arr1[(i-1),3,5])*dlsil_uhsil -     # detected LSIL LTFU to undetected HSIL
+    (arr1[(i-1),3,5])*hyst_3-           # hysterectomy
+    (arr1[(i-1),3,5])*die_4         # die (unrelated)
+  # HSIL undetected 40+ (4) 
+  arr1[i,4,5] <- (arr1[(i-1),4,5]) + 
+    (arr1[(i-1),4,4])*age_up_3 +        # age up
+    (arr1[(i-1),2,5])*ulsil_uhsil_4 + # undetected LSIL progress to undetected HSIL 
+    (arr1[(i-1),3,5])*dlsil_uhsil -     # detected LSIL LTFU to undetected HSIL
+    (arr1[(i-1),4,5])*uhsil_ulsil_4 - # undetected HSIL regress to undetected LSIL
+    (arr1[(i-1),4,5])*uhsil_ucan_2_3 -      # undetected HSIL progress to undetected cancer
+    (arr1[(i-1),4,5])*uhsil_dhsil -     # undetected HSIL screened to detected HSIL
+    (arr1[(i-1),4,5])*hyst_3-           # hysterectomy
+    (arr1[(i-1),4,5])*die_4         # die (unrelated)
+  # HSIL detected 40+ (5)
+  arr1[i,5,5] <- (arr1[(i-1),5,5]) + 
+    (arr1[(i-1),5,4])*age_up_3 +        # age up
+    (arr1[(i-1),3,5])*dlsil_dhsil_4 + # detected LSIL progress to detected HSIL
+    (arr1[(i-1),4,5])*uhsil_dhsil -     # undetected HSIL screened to detected HSIL
+    (arr1[(i-1),5,5])*dhsil_dlsil_4 - # detected HSIL regress to detected LSIL
+    (arr1[(i-1),5,5])*dhsil_ucan -      # detected HSIL LTFU to undetected cancer
+    (arr1[(i-1),5,5])*dhsil_dcan_4 -      # detected HSIL progress to detected cancer
+    (arr1[(i-1),5,5])*dhsil_norm -      # detected HSIL treated to normal
+    (arr1[(i-1),5,5])*hyst_3-           # hysterectomy
+    (arr1[(i-1),5,5])*die_4         # die (unrelated)
+  # Cancer undetected 40+ (6)
+  arr1[i,6,5] <- (arr1[(i-1),6,5]) +
+    (arr1[(i-1),6,4])*age_up_3 +        # age up
+    (arr1[(i-1),4,5])*uhsil_ucan_4 +      # undetected HSIL progress to undetected cancer
+    (arr1[(i-1),5,5])*dhsil_ucan -      # detected HSIL LTFU to undetected cancer
+    (arr1[(i-1),6,5])*ucan_dcan -       # undetected cancer screened to detected cancer
+    (arr1[(i-1),6,5])*hyst_3-           # hysterectomy
+    (arr1[(i-1),6,5])*die_4         # die (unrelated)
+  # Cancer detected 40+ (7)
+  arr1[i,7,5] <- (arr1[(i-1),7,5]) +
+    (arr1[(i-1),7,4])*age_up_3 +        # age up
+    (arr1[(i-1),5,5])*dhsil_dcan_4 +      # detected HSIL progress to detected cancer
+    (arr1[(i-1),6,5])*ucan_dcan -       # undetected cancer screened to detected cancer
+    (arr1[(i-1),7,5])*dcan_dcandeath -  # detected cancer progress to cancer death
+    (arr1[(i-1),7,5])*dcan_norm -       # detected cancer treated to normal
+    (arr1[(i-1),7,5])*die_4         # die (unrelated)
+  # Cancer deaths 25-39 (8)
+  arr1[i,8,5] <-
+    (arr1[(i-1),7,5])*dcan_dcandeath    # detected cancer progress to cancer death
   }
   
   arr1 <- round(arr1,0)
