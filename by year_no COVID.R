@@ -4,6 +4,8 @@
 
 library(ggplot2)
 
+noCov_byyr <- function(){
+
 #################### UNVACCINATED ####################
 
   t = 1030 # 1030 years
@@ -901,6 +903,12 @@ library(ggplot2)
   # Combined Cancer undetected and detected
   result_tot_noCov$All_Cancer <- result_tot_noCov$Undet_Cancer + result_tot_noCov$Det_Cancer
   
+  return(result_tot_noCov)
+  
+}
+  
+
+result_tot_noCov <- noCov_byyr()
   
   # Expected: 216000,11778,3663
   result_tot_noCov[which(result_tot_noCov$Year==2008),]
@@ -910,26 +918,5 @@ library(ggplot2)
   #result_tot[which(result_tot$Year==2008),]
   #result_tot[which(result_tot$Year==2016),]
   
-
-
-## Integration
-
-HSIL_Cov <- integrate(splinefun(result_tot$Year, result_tot$All_HSIL), 2020,2050)
-HSIL_noCov <- integrate(splinefun(result_tot_noCov$Year, result_tot_noCov$All_HSIL), 2020,2050)
-HSIL_Cov
-HSIL_noCov
-
-Undet_HSIL_Cov <- integrate(splinefun(result_tot$Year, result_tot$Undet_HSIL), 2020,2050)
-Undet_HSIL_noCov <- integrate(splinefun(result_tot_noCov$Year, result_tot_noCov$Undet_HSIL), 2020,2050)
-Undet_HSIL_Cov
-Undet_HSIL_noCov
-
-cancer_Cov <- integrate(splinefun(result_tot$Year, result_tot$Det_Cancer), 2020,2050)
-cancer_noCov <- integrate(splinefun(result_tot_noCov$Year, result_tot_noCov$Det_Cancer), 2020,2050)
-
-cancerdeath_Cov <- integrate(splinefun(result_tot$Year, result_tot$Cancer_Death), 2020,2050)
-cancerdeath_noCov <- integrate(splinefun(result_tot_noCov$Year, result_tot_noCov$Cancer_Death), 2020,2050)
-cancerdeath_Cov
-cancerdeath_noCov
 
 
