@@ -1,26 +1,23 @@
-
-## FINAL MODEL 2016 PARAMETERS ##
-
+library(ggplot2)
 
 # March 12
 
-library(ggplot2)
-
-
-screen_decr <- function(decrease){
-
+# Create function
+analysis_byrace_noCov <- function(perc_race,screen,vax){
+  
   #################### UNVACCINATED ####################
   
+  #### Starting parameters ####
   t = 1030 # 1030 years
   N.states = 8
   
   # Population size
   # 154566548 = all women
-  Pop_size_0 = 35704873*0.5 # <18*proportion vaxxed
-  Pop_size_1 = 14683822*0.5 # 18-24*proportion vaxxed
-  Pop_size_2 = 10201392*0.5 # 25-29*proportion vaxxed
-  Pop_size_3 = 19939084*0.5 # 30-39*proportion vaxxed
-  Pop_size_4 = (154566548-Pop_size_0-Pop_size_1-Pop_size_2-Pop_size_3)*0.5
+  Pop_size_0 = 35704873*perc_race*(1-vax)
+  Pop_size_1 = 14683822*perc_race*(1-vax)
+  Pop_size_2 = 10201392*perc_race*(1-vax)
+  Pop_size_3 = 19939084*perc_race*(1-vax)
+  Pop_size_4 = (154566548-Pop_size_0-Pop_size_1-Pop_size_2-Pop_size_3)*perc_race*(1-vax)
   
   # aging into cohort
   age_in <- (1/20) # multiply by pop under 18
@@ -28,28 +25,29 @@ screen_decr <- function(decrease){
   age_up_0 <- 1/3 # proportion turning 21
   age_up_1 <- 1/4 # proportion turning 25
   age_up_2 <- 1/5 # proportion turning 30
+  # aging out of cohort
   age_up_3 <- 1/10 # proportion turning 40
   # Dying
   die_1 <- 74/100000 # proportion dying age 18-24
   die_2_3 <- 164/100000 # proportion dying age 25-39
-  die_4 <- 1500/100000 # proportion dying age 40+
+  die_4 <- 1500/100000
   
   # undetected
   norm_ulsil_0 <- 0.15 # normal > undetected LSIL (18-20)
   norm_ulsil_1 <- 0.08 # normal > undetected LSIL (21-24)
   norm_ulsil_2 <- 0.02 # normal > undetected LSIL (25-29)
   norm_ulsil_3 <- 0.01 # normal > undetected LSIL (30-39)
-  norm_ulsil_4 <- 0 # normal > undetected LSIL (40+)
+  norm_ulsil_4 <- 0
   ulsil_norm_1 <- 0.60 # undetected LSIL > normal (18-24)
   ulsil_norm_2_3 <- 0.4 # undetected LSIL > normal (25-39)
   ulsil_uhsil_1 <- 0.14 # undetected LSIL > undetected HSIL (18-24)
   ulsil_uhsil_2_3 <- 0.30 # undetected LSIL > undetected HSIL (25-39)
-  ulsil_uhsil_4 <- 0.30 # undetected LSIL > undetected HSIL (40+)
+  ulsil_uhsil_4 <- 0.30
   uhsil_ulsil_1 <- 0.62 # undetected HSIL > undetected LSIL (18-24)
   uhsil_ulsil_2_3 <- 0.35 # undetected HSIL > undetected LSIL (25-39)
-  uhsil_ulsil_4 <- 0.30 # undetected HSIL > undetected LSIL (40+)
-  uhsil_ucan_2_3 <- 6/100000 # undetected HSIL > undetected cancer (21-39)
-  uhsil_ucan_4 <- 12/100000 # undetected HSIL > undetected cancer (40+)
+  uhsil_ulsil_4 <- 0.30
+  uhsil_ucan_2_3 <- 6/100000 # undetected HSIL > undetected cancer
+  uhsil_ucan_4 <- 12/100000
   
   # detected
   norm_dlsil_1 <- norm_ulsil_1 # normal > detected LSIL (21-24)
@@ -60,10 +58,10 @@ screen_decr <- function(decrease){
   dlsil_norm_2_3 <- ulsil_norm_2_3 # detected LSIL > normal (25-39)
   dlsil_dhsil_1 <- ulsil_uhsil_1 # detected LSIL > detected HSIL (21-24)
   dlsil_dhsil_2_3 <- ulsil_uhsil_2_3 # detected LSIL > detected HSIL (25-39)
-  dlsil_dhsil_4 <- ulsil_uhsil_4 # detected LSIL > detected HSIL (40+)
+  dlsil_dhsil_4 <- ulsil_uhsil_4
   dhsil_dlsil_1 <-  uhsil_ulsil_1 # detected HSIL > detected LSIL (21-24)
   dhsil_dlsil_2_3 <-  uhsil_ulsil_2_3 # detected HSIL > detected LSIL (25-39)
-  dhsil_dlsil_4 <-  uhsil_ulsil_4 # detected HSIL > detected LSIL (40+)
+  dhsil_dlsil_4 <-  uhsil_ulsil_4
   dhsil_dcan_2_3 <- uhsil_ucan_2_3 # detected HSIL > detected cancer
   dhsil_dcan_4 <- uhsil_ucan_4 # detected HSIL > detected cancer
   dcan_dcandeath <- 0.35 # detected cancer > detected cancer death
@@ -100,8 +98,9 @@ screen_decr <- function(decrease){
   
   # Assign starting states
   set.seed(123)
-  arr1[1,,] <- rmultinom(1, (Pop_size_1+Pop_size_2+Pop_size_3+Pop_size_4), prob=c(prev1,prev2,prev3,prev4,prev5,prev6,prev7,prev8)) 
+  arr1[1,,] <- rmultinom(1, (Pop_size_1+Pop_size_2+Pop_size_3+Pop_size_4)*perc_race, prob=c(prev1,prev2,prev3,prev4,prev5,prev6,prev7,prev8)) 
   
+    
   ### Run model ###
   
   for(i in 2:t){
@@ -111,14 +110,14 @@ screen_decr <- function(decrease){
     t.index <- i
     
     # screening
-    ulsil_dlsil <- ifelse(t.index<1000|t.index>1000,0.83/3,(0.83/3)*(1-decrease)) # in the year 1000 (2020), screening drops 60%
-    uhsil_dhsil <- ifelse(t.index<1000|t.index>1000,0.83/3,(0.83/3)*(1-decrease)) # in the year 1000 (2020), screening drops 60%
-    ucan_dcan <- 0.83/3 # cancer screening does not change (symptomatic)
-  
+    ulsil_dlsil <- screen/3
+    uhsil_dhsil <- screen/3
+    ucan_dcan <- screen/3
+    
     # loss to follow up
-    dlsil_uhsil <- ifelse(t.index<1000|t.index>1000,0.17/3,(0.17/3)*(1+decrease)) # in the year 1000 (2020), LTFU increases 40%
-    dhsil_ucan <- ifelse(t.index<1000|t.index>1000,0.17/3,(0.17/3)*(1+decrease)) # in the year 1000 (2020), LTFU increases 40%
-
+    dlsil_uhsil <- (1-screen)/3
+    dhsil_ucan <- (1-screen)/3
+    
     ########################### 18-20 ########################
     
     # Normal 18-20 (1)
@@ -452,7 +451,6 @@ screen_decr <- function(decrease){
     # Cancer deaths 25-39 (8)
     arr1[i,8,5] <-
       (arr1[(i-1),7,5])*dcan_dcandeath    # detected cancer progress to cancer death
-    
   }
   
   arr1 <- round(arr1,0)
@@ -462,31 +460,29 @@ screen_decr <- function(decrease){
   # pull out last row of resultant df
   final_result <- as.data.frame(result[nrow(result),])
 
-  # Log likelihood of result vs predicted
-  LL <- sum(dpois(final_result[c(5,7,8),], c(196000*0.4,10510*0.4,3400*0.4), log=TRUE))
-
   # Pull out detected HSIL, detected cancer, and cancer death
   Results <- final_result[c(5,7,8),]
   # Pull out detected HSIL, undetected cancer, and cancer death
   Results_3 <- final_result[c(5,6,8),]
-
+  
   # Make resultant array into df
   result_2 <- as.data.frame(result)
   # Create column name for Years column
   result_3 <- as.data.frame(tibble::rownames_to_column(result_2, "Year"))
   # Add year # column
   result_3$Year.No <- seq(1:t)
-
-
-  #################### UNVACCINATED ####################
+  
+  
+  
+  #################### VACCINATED ####################
   
   # Population size
   # 154566548 = all women
-  Pop_size_0 = 35704873*0.5 # <18*proportion vaxxed
-  Pop_size_1 = 14683822*0.5 # 18-24*proportion vaxxed
-  Pop_size_2 = 10201392*0.5 # 25-29*proportion vaxxed
-  Pop_size_3 = 19939084*0.5 # 30-39*proportion vaxxed
-  Pop_size_4 = (154566548-Pop_size_0-Pop_size_1-Pop_size_2-Pop_size_3)*0.5
+  Pop_size_0 = 35704873*perc_race*vax
+  Pop_size_1 = 14683822*perc_race*vax
+  Pop_size_2 = 10201392*perc_race*vax
+  Pop_size_3 = 19939084*perc_race*vax
+  Pop_size_4 = (154566548-Pop_size_0-Pop_size_1-Pop_size_2-Pop_size_3)*perc_race*vax
   
   #### Create array ####
   
@@ -504,31 +500,29 @@ screen_decr <- function(decrease){
   
   # Assign starting states
   set.seed(123)
-  arr1[1,,] <- rmultinom(1, (Pop_size_1+Pop_size_2+Pop_size_3+Pop_size_4), prob=c(prev1,prev2,prev3,prev4,prev5,prev6,prev7,prev8)) 
+  arr1[1,,] <- rmultinom(1, (Pop_size_1+Pop_size_2+Pop_size_3+Pop_size_4)*perc_race, prob=c(prev1,prev2,prev3,prev4,prev5,prev6,prev7,prev8)) 
   
   
   ### Run model ###
-  
   for(i in 2:t){
     
     ########################### Variable rates ########################
     
     t.index <- i
     
-    # vaccination
-    norm_ulsil_0 <- ifelse(t.index<988, 0.15, 0.15*0.2) # starting in year 988 (2008), vaccination drops incidence by 80%
-    norm_ulsil_1 <- ifelse(t.index<988, 0.08, 0.08*0.2) # starting in year 988 (2008), vaccination drops incidence by 80%
-    norm_ulsil_2 <- ifelse(t.index<988, 0.02, 0.02*0.2) # starting in year 988 (2008), vaccination drops incidence by 80%
+    norm_ulsil_0 <- ifelse(t.index<988, 0.15, 0.15*0.2)
+    norm_ulsil_1 <- ifelse(t.index<988, 0.08, 0.08*0.2)
+    norm_ulsil_2 <- ifelse(t.index<988, 0.02, 0.02*0.2)
     
     # screening
-    ulsil_dlsil <- ifelse(t.index<1000|t.index>1000,0.83/3,(0.83/3)*(1-decrease)) # in the year 1000 (2020), screening drops 60%
-    uhsil_dhsil <- ifelse(t.index<1000|t.index>1000,0.83/3,(0.83/3)*(1-decrease)) # in the year 1000 (2020), screening drops 60%
-    ucan_dcan <- 0.83/3 # cancer screening does not change (symptomatic)
-  
+    ulsil_dlsil <- screen/3
+    uhsil_dhsil <- screen/3
+    ucan_dcan <- screen/3
+    
     # loss to follow up
-    dlsil_uhsil <- ifelse(t.index<1000|t.index>1000,0.17/3,(0.17/3)*(1+decrease)) # in the year 1000 (2020), LTFU increases 40%
-    dhsil_ucan <- ifelse(t.index<1000|t.index>1000,0.17/3,(0.17/3)*(1+decrease)) # in the year 1000 (2020), LTFU increases 40%
-
+    dlsil_uhsil <- (1-screen)/3
+    dhsil_ucan <- (1-screen)/3
+    
     ########################### 18-20 ########################
     
     # Normal 18-20 (1)
@@ -862,66 +856,61 @@ screen_decr <- function(decrease){
     # Cancer deaths 25-39 (8)
     arr1[i,8,5] <-
       (arr1[(i-1),7,5])*dcan_dcandeath    # detected cancer progress to cancer death
-
   }
   
   arr1 <- round(arr1,0)
-    
+  
   # Collapse array - remove age stratification
   result_5 <- apply(arr1, 2L, rowSums)
   # Vector of HSIL, cancer, and cancer death at steady state for iteration
   final_result_2 <- as.data.frame(result_5[nrow(result_5),])
-
+  
   # Log likelihood of result vs predicted
   LL_2 <- sum(dpois(final_result_2[c(5,7,8),], c(196000*0.6,10510*0.6,3400*0.6), log=TRUE))
-
+  
   # Vector of detected HSIL, detected cancer, and cancer death
   Results_2 <- final_result_2[c(5,7,8),]
   # Vector of detected HSIL, detected cancer, and cancer death
   Results_4 <- final_result_2[c(4,6,8),]
-
+  
   # Create df from resultant array
   result_6 <- as.data.frame(result_5)
   # Add column name to Years column
   result_7 <- as.data.frame(tibble::rownames_to_column(result_6, "Year"))
   # Add year # column
   result_7$Year.No <- seq(1:t)
-
-
-
+  
+  
   ################### COMBINED RESULTS ###################
-
+  
   # Combine unvaccinated and vaccinated into one vector (final results only)
   Results_all = Results+Results_2
-
+  
   # Combine vaccinated and unvaccinated into one df (entire df)
   result_tot <- result_3[,-1] + result_7[,-1]
   #View(result_tot)
-
+  
   # After adding, divide by two to fix Year #
   result_tot$Year.No <- result_tot$Year.No/2
   # Subtract to match year # to calendar year
   result_tot$Year <- result_tot$Year.No+(2008-987)
-
+  
   # Combined LSIL undetected and detected
   result_tot$All_LSIL <- result_tot$Undet_LSIL + result_tot$Det_LSIL
   # Combine HSIL undetected and detected
   result_tot$All_HSIL <- result_tot$Undet_HSIL + result_tot$Det_HSIL
   # Combined Cancer undetected and detected 
   result_tot$All_Cancer <- result_tot$Undet_Cancer + result_tot$Det_Cancer
-
+  
   return(result_tot)
+  
 }
 
 
-# Run model
-# 60% decrease in screening, 60% increase in LFTU
-screen_0.6 <- screen_decr(0.6)
-# 40% decrease in screening, 40% increase in LFTU
-screen_0.4 <- screen_decr(0.4)
-# 80% decrease in screening, 80% increase in LFTU
-screen_0.8 <- screen_decr(0.8)
-# rename
-result_tot <- screen_0.6
+### Results by Race
+
+Results_white_noCov <- analysis_byrace_noCov(0.61,0.8,0.6)
+Results_black_noCov <- analysis_byrace_noCov(0.12,0.84,0.45)
+Results_hisp_noCov <- analysis_byrace_noCov(0.17,0.8,0.5)
 
 
