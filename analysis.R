@@ -99,7 +99,7 @@ screen_decr <- function(decrease){
   # Assign starting prevalence of each state
   prev1 = 0.8 # normal
   prev2 = 0.1 # LSIL undetected
-  prev3 = 0 # LSIL deteced
+  prev3 = 0 # LSIL detected
   prev4 = 0.1 # HSIL undetected
   prev5 = 0 # HSIL detected
   prev6 = 0 # cancer undetected
