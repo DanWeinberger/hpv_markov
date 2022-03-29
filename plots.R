@@ -1,7 +1,15 @@
 
-### Project Plots
-### Guinevere Oliver
-### March 12
+############################################################################################################
+
+######### Plots
+######### Guinevere Oliver
+######### March 28, 2022
+
+############################################################################################################
+
+# Call libraries
+library(ggplot2)
+
 
 #################################### Compare COVID to no COVID ####################################
 
@@ -11,7 +19,7 @@ p_Norm<-ggplot(data=result_tot, aes(x=Year)) +
   geom_line(data=result_tot, aes(y=Normal, alpha="Normal"), color="red") + 
   coord_cartesian(
     xlim = c(2000,2050),
-    ylim = c(10000000,20000000)) +
+    ylim = c(30000000,35000000)) +
   geom_vline(xintercept = 2008,linetype="dashed",alpha=0.3) +
   geom_vline(xintercept = 2020,linetype="dashed",alpha=0.3) +
   scale_alpha_manual(values=c("Normal no disruption"=0.3, "Normal"=1), name="") +
@@ -25,16 +33,16 @@ p_LSIL<-ggplot(data=result_tot, aes(x=Year)) +
   geom_line(data=result_tot, aes(y=Undet_LSIL, alpha="Disruption", linetype="Undetected"), colour="red") + 
   geom_line(data=result_tot_noCov, aes(y=Det_LSIL, alpha="No disruption", linetype="Detected"), colour="red") +
   geom_line(data=result_tot, aes(y=Det_LSIL, alpha="Disruption",linetype="Detected"), colour="red") +
-  geom_line(data=result_tot_noCov, aes(y=All_LSIL, alpha="No disruption", color="Combined Undetected and Detected")) +
-  geom_line(data=result_tot, aes(y=All_LSIL, alpha="Disruption", color="Combined Undetected and Detected")) +
+  geom_line(data=result_tot_noCov, aes(y=All_LSIL, alpha="No disruption", color="Combined undetected and detected")) +
+  geom_line(data=result_tot, aes(y=All_LSIL, alpha="Disruption", color="Combined undetected and detected")) +
   coord_cartesian(
     xlim = c(2000,2050),
-    ylim = c(0,1500000)) +
+    ylim = c(0,2000000)) +
   geom_vline(xintercept = 2008,linetype="dashed",alpha=0.3) +
   geom_vline(xintercept = 2020,linetype="dashed",alpha=0.3) +
   labs(y="LSIL Cases") +
   scale_linetype_manual(values=c("Undetected"="dashed", "Detected"="solid"), name="") +
-  scale_color_manual(values=c("Combined Undetected and Detected"="black"), name="") +
+  scale_color_manual(values=c("Combined undetected and detected"="black"), name="") +
   scale_alpha_manual(values=c("No disruption"=0.5, "Disruption"=1), name="", guide=guide_legend(override.aes = list(color="red", alpha=c(0.1,1)))) +
   theme_classic()
 p_LSIL
@@ -46,8 +54,8 @@ p_HSIL<-ggplot(data=result_tot, aes(x=Year)) +
   geom_line(data=result_tot, aes(y=Undet_HSIL, alpha="Disruption", linetype="Undetected"), colour="red") + 
   geom_line(data=result_tot_noCov, aes(y=Det_HSIL, alpha="No disruption", linetype="Detected"), colour="red") +
   geom_line(data=result_tot, aes(y=Det_HSIL, alpha="Disruption",linetype="Detected"), colour="red") +
-  geom_line(data=result_tot_noCov, aes(y=All_HSIL, alpha="No disruption", color="Combined Undetected and Detected")) +
-  geom_line(data=result_tot, aes(y=All_HSIL, alpha="Disruption", color="Combined Undetected and Detected")) +
+  geom_line(data=result_tot_noCov, aes(y=All_HSIL, alpha="No disruption", color="Combined undetected and detected")) +
+  geom_line(data=result_tot, aes(y=All_HSIL, alpha="Disruption", color="Combined undetected and detected")) +
   coord_cartesian(
     xlim = c(2000,2050),
     ylim = c(0,750000)) +
@@ -55,10 +63,11 @@ p_HSIL<-ggplot(data=result_tot, aes(x=Year)) +
   geom_vline(xintercept = 2020,linetype="dashed",alpha=0.3) +
   labs(y="HSIL Cases") +
   scale_linetype_manual(values=c("Undetected"="dashed", "Detected"="solid"), name="") +
-  scale_color_manual(values=c("Combined Undetected and Detected"="black"), name="") +
+  scale_color_manual(values=c("Combined undetected and detected"="black"), name="") +
   scale_alpha_manual(values=c("No disruption"=0.5, "Disruption"=1), name="", guide=guide_legend(override.aes = list(color="red", alpha=c(0.1,1)))) +
   theme_classic()
 p_HSIL
+
 
 # Cancer Cases and Deaths
 p_Cancer<-ggplot(data=result_tot, aes(x=Year)) +
@@ -68,8 +77,8 @@ p_Cancer<-ggplot(data=result_tot, aes(x=Year)) +
   geom_line(data=result_tot, aes(y=Det_Cancer,alpha="Disruption"), colour="red") +
   geom_line(data=result_tot_noCov, aes(y=Cancer_Death,alpha="No disruption"), colour="red") +
   geom_line(data=result_tot, aes(y=Cancer_Death,alpha="Disruption",linetype="Cervical Cancer Death"), colour="red") +
-  geom_line(data=result_tot_noCov, aes(y=All_Cancer,alpha="No disruption",color="Combined Undetected and Detected")) +
-  geom_line(data=result_tot, aes(y=All_Cancer,alpha="Disruption",color="Combined Undetected and Detected")) +
+  geom_line(data=result_tot_noCov, aes(y=All_Cancer,alpha="No disruption",color="Combined undetected and detected")) +
+  geom_line(data=result_tot, aes(y=All_Cancer,alpha="Disruption",color="Combined undetected and detected")) +
   coord_cartesian(
     xlim = c(2000,2050),
     ylim = c(0,55000)) +
@@ -77,7 +86,7 @@ p_Cancer<-ggplot(data=result_tot, aes(x=Year)) +
   geom_vline(xintercept = 2020,linetype="dashed",alpha=0.3) + 
   labs(y="Cancer Cases/Deaths") +
   scale_linetype_manual(values=c("Undetected"="dashed", "Detected"="solid","Cervical Cancer Death"="dotted"), name="") +
-  scale_color_manual(values=c("Combined Undetected and Detected"="black"), name="") +
+  scale_color_manual(values=c("Combined undetected and detected"="black"), name="") +
   scale_alpha_manual(values=c("No disruption"=0.5, "Disruption"=1), name="", guide=guide_legend(override.aes = list(color="red", alpha=c(0.1,1)))) +
   theme_classic()
 p_Cancer
@@ -98,7 +107,7 @@ p_LSIL<-ggplot(screen_0.6, aes(x=Year)) +
   geom_ribbon(aes(ymin=screen_0.8$Det_LSIL,ymax=screen_0.4$Det_LSIL, fill="40%-80% range"), alpha=0.3) +
   coord_cartesian(
     xlim = c(2000,2050),
-    ylim = c(250000,1000000)) +
+    ylim = c(0,1000000)) +
   geom_vline(xintercept = 2008,linetype="dashed",alpha=0.3) +
   geom_vline(xintercept = 2020,linetype="dashed",alpha=0.3) + 
   labs(y="LSIL Cases") + 
@@ -130,6 +139,7 @@ p_HSIL<-ggplot(screen_0.6, aes(x=Year)) +
 p_HSIL
 
 
+# Cancer Cases and Deaths
 p_Cancer<-ggplot(screen_0.6, aes(x=Year)) +
   geom_line(aes(y=Undet_Cancer, linetype="Undetected"), colour="red") + 
   geom_line(aes(y=Det_Cancer, linetype="Detected"), colour="red") +
@@ -145,7 +155,7 @@ p_Cancer<-ggplot(screen_0.6, aes(x=Year)) +
   geom_ribbon(aes(ymin=screen_0.8$Cancer_Death,ymax=screen_0.4$Cancer_Death, fill="40%-80% range"), alpha=0.3) +
   coord_cartesian(
     xlim = c(2000,2050),
-    ylim = c(0,50000)) +
+    ylim = c(0,40000)) +
   geom_vline(xintercept = 2008,linetype="dashed",alpha=0.3) +
   geom_vline(xintercept = 2020,linetype="dashed",alpha=0.3) +
   labs(y="Cancer Cases/Deaths") +
@@ -212,6 +222,7 @@ p_HSIL_race<-ggplot(Results_white, aes(x=Year)) +
 p_HSIL_race
 
 
+# Cancer Cases and Deaths
 p_Cancer_race<-ggplot(Results_white, aes(x=Year)) +
   geom_line(data=Results_white, aes(y=Undet_Cancer,color="non-Hispanic White",linetype="Undetected",alpha="Disruption")) + 
   geom_line(data=Results_white, aes(y=Det_Cancer,color="non-Hispanic White",linetype="Detected",alpha="Disruption")) +
@@ -233,7 +244,7 @@ p_Cancer_race<-ggplot(Results_white, aes(x=Year)) +
   geom_line(data=Results_hisp_noCov, aes(y=Cancer_Death,color="Hispanic",alpha="No disruption")) +
   coord_cartesian(
     xlim = c(2000,2050),
-    ylim = c(0,35000)) +
+    ylim = c(0,30000)) +
   geom_vline(xintercept = 2008,linetype="dashed",alpha=0.3) +
   geom_vline(xintercept = 2020,linetype="dashed",alpha=0.3) +
   scale_linetype_manual(values=c("Undetected"="dashed", "Detected"="solid","Cervical Cancer Death"="dotted"), name="") +

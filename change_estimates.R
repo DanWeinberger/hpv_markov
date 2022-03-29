@@ -1,4 +1,12 @@
 
+############################################################################################################
+
+######### Change estimates (COVID vs no COVID)
+######### Guinevere Oliver
+######### March 28, 2022
+
+############################################################################################################
+
 
 #################################### Compare COVID to no COVID ####################################
 
@@ -279,7 +287,6 @@ cancer_death_perc_change_30y
 
 
 
-
 ################### 80%
 
 ### HSIL All
@@ -430,8 +437,8 @@ HSIL_Cov_5y <- integrate(splinefun(Results_white$Year, Results_white$All_HSIL), 
 HSIL_noCov_5y <- integrate(splinefun(Results_white_noCov$Year, Results_white_noCov$All_HSIL), 2020,2025)
 HSIL_Cov_5y
 HSIL_noCov_5y
-HSIL_Cov_num_5y <- 1293102
-HSIL_noCov_num_5y <- 1234999
+HSIL_Cov_num_5y <- 1306490
+HSIL_noCov_num_5y <- 1259015
 HSIL_abs_change_5y <- HSIL_Cov_num_5y - HSIL_noCov_num_5y
 HSIL_perc_change_5y <- HSIL_abs_change_5y/HSIL_noCov_num_5y*100
 HSIL_perc_change_5y
@@ -441,8 +448,8 @@ HSIL_Cov_30y <- integrate(splinefun(Results_white$Year, Results_white$All_HSIL),
 HSIL_noCov_30y <- integrate(splinefun(Results_white_noCov$Year, Results_white_noCov$All_HSIL), 2020,2050)
 HSIL_Cov_30y
 HSIL_noCov_30y
-HSIL_Cov_num_30y <- 7349669
-HSIL_noCov_num_30y <- 7291124
+HSIL_Cov_num_30y <- 7471033
+HSIL_noCov_num_30y <- 7414902
 HSIL_abs_change_30y <- HSIL_Cov_num_30y - HSIL_noCov_num_30y
 HSIL_perc_change_30y <- HSIL_abs_change_30y/HSIL_noCov_num_30y*100
 HSIL_perc_change_30y
@@ -455,8 +462,8 @@ HSIL_det_Cov_5y <- integrate(splinefun(Results_white$Year, Results_white$Det_HSI
 HSIL_det_noCov_5y <- integrate(splinefun(Results_white_noCov$Year, Results_white_noCov$Det_HSIL), 2020,2025)
 HSIL_det_Cov_5y
 HSIL_det_noCov_5y
-HSIL_det_Cov_num_5y <- 656242.8
-HSIL_det_noCov_num_5y <- 655356.5
+HSIL_det_Cov_num_5y <- 513763.7
+HSIL_det_noCov_num_5y <- 531583.6
 HSIL_det_abs_change_5y <- HSIL_det_Cov_num_5y - HSIL_det_noCov_num_5y
 HSIL_det_perc_change_5y <- HSIL_det_abs_change_5y/HSIL_det_noCov_num_5y*100
 HSIL_det_perc_change_5y
@@ -466,8 +473,8 @@ HSIL_det_Cov_30y <- integrate(splinefun(Results_white$Year, Results_white$Det_HS
 HSIL_det_noCov_30y <- integrate(splinefun(Results_white_noCov$Year, Results_white_noCov$Det_HSIL), 2020,2050)
 HSIL_det_Cov_30y
 HSIL_det_noCov_30y
-HSIL_det_Cov_num_30y <- 3860504
-HSIL_det_noCov_num_30y <- 3860720
+HSIL_det_Cov_num_30y <- 3108160
+HSIL_det_noCov_num_30y <- 3122973
 HSIL_det_abs_change_30y <- HSIL_det_Cov_num_30y - HSIL_det_noCov_num_30y
 HSIL_det_perc_change_30y <- HSIL_det_abs_change_30y/HSIL_det_noCov_num_30y*100
 HSIL_det_perc_change_30y
@@ -480,8 +487,8 @@ cancer_all_Cov_5y <- integrate(splinefun(Results_white$Year, Results_white$All_C
 cancer_all_noCov_5y <- integrate(splinefun(Results_white_noCov$Year, Results_white_noCov$All_Cancer), 2020,2025)
 cancer_all_Cov_5y
 cancer_all_noCov_5y
-cancer_all_Cov_num_5y <- 243859.9
-cancer_all_noCov_num_5y <- 245093.1
+cancer_all_Cov_num_5y <- 144896
+cancer_all_noCov_num_5y <- 139926.1
 cancer_all_abs_change_5y <- cancer_all_Cov_num_5y - cancer_all_noCov_num_5y
 cancer_all_perc_change_5y <- cancer_all_abs_change_5y/cancer_all_noCov_num_5y*100
 cancer_all_perc_change_5y
@@ -491,8 +498,8 @@ cancer_all_Cov_30y <- integrate(splinefun(Results_white$Year, Results_white$All_
 cancer_all_noCov_30y <- integrate(splinefun(Results_white_noCov$Year, Results_white_noCov$All_Cancer), 2020,2050)
 cancer_all_Cov_30y
 cancer_all_noCov_30y
-cancer_all_Cov_num_30y <- 1434001
-cancer_all_noCov_num_30y <- 1433383
+cancer_all_Cov_num_30y <- 814863.1
+cancer_all_noCov_num_30y <- 807024.2
 cancer_all_abs_change_30y <- cancer_all_Cov_num_30y - cancer_all_noCov_num_30y
 cancer_all_perc_change_30y <- cancer_all_abs_change_30y/cancer_all_noCov_num_30y*100
 cancer_all_perc_change_30y
@@ -505,8 +512,8 @@ cancer_det_Cov_5y <- integrate(splinefun(Results_white$Year, Results_white$Det_C
 cancer_det_noCov_5y <- integrate(splinefun(Results_white_noCov$Year, Results_white_noCov$Det_Cancer), 2020,2025)
 cancer_det_Cov_5y
 cancer_det_noCov_5y
-cancer_det_Cov_num_5y <- 118679.9
-cancer_det_noCov_num_5y <- 118938.2
+cancer_det_Cov_num_5y <- 34532.63
+cancer_det_noCov_num_5y <- 33497.47
 cancer_det_abs_change_5y <- cancer_det_Cov_num_5y - cancer_det_noCov_num_5y
 cancer_det_perc_change_5y <- cancer_det_abs_change_5y/cancer_det_noCov_num_5y*100
 cancer_det_perc_change_5y
@@ -516,8 +523,8 @@ cancer_det_Cov_30y <- integrate(splinefun(Results_white$Year, Results_white$Det_
 cancer_det_noCov_30y <- integrate(splinefun(Results_white_noCov$Year, Results_white_noCov$Det_Cancer), 2020,2050)
 cancer_det_Cov_30y
 cancer_det_noCov_30y
-cancer_det_Cov_num_30y <- 694567.6
-cancer_det_noCov_num_30y <- 693934.1
+cancer_det_Cov_num_30y <- 194153
+cancer_det_noCov_num_30y <- 192350.5
 cancer_det_abs_change_30y <- cancer_det_Cov_num_30y - cancer_det_noCov_num_30y
 cancer_det_perc_change_30y <- cancer_det_abs_change_30y/cancer_det_noCov_num_30y*100
 cancer_det_perc_change_30y
@@ -530,8 +537,8 @@ cancer_death_Cov_5y <- integrate(splinefun(Results_white$Year, Results_white$Can
 cancer_death_noCov_5y <- integrate(splinefun(Results_white_noCov$Year, Results_white_noCov$Cancer_Death), 2020,2025)
 cancer_death_Cov_5y
 cancer_death_noCov_5y
-cancer_death_Cov_num_5y <- 40922.94
-cancer_death_noCov_num_5y <- 41755.94
+cancer_death_Cov_num_5y <- 12154.84
+cancer_death_noCov_num_5y <- 11833.18
 cancer_death_abs_change_5y <- cancer_death_Cov_num_5y - cancer_death_noCov_num_5y
 cancer_death_perc_change_5y <- cancer_death_abs_change_5y/cancer_death_noCov_num_5y*100
 cancer_death_perc_change_5y
@@ -541,8 +548,8 @@ cancer_death_Cov_30y <- integrate(splinefun(Results_white$Year, Results_white$Ca
 cancer_death_noCov_30y <- integrate(splinefun(Results_white_noCov$Year, Results_white_noCov$Cancer_Death), 2020,2050)
 cancer_death_Cov_30y
 cancer_death_noCov_30y
-cancer_death_Cov_num_30y <- 243259.1
-cancer_death_noCov_num_30y <- 243331
+cancer_death_Cov_num_30y <- 68177.08
+cancer_death_noCov_num_30y <- 67544.09
 cancer_death_abs_change_30y <- cancer_death_Cov_num_30y - cancer_death_noCov_num_30y
 cancer_death_perc_change_30y <- cancer_death_abs_change_30y/cancer_death_noCov_num_30y*100
 cancer_death_perc_change_30y
@@ -557,8 +564,8 @@ HSIL_Cov_5y <- integrate(splinefun(Results_black$Year, Results_black$All_HSIL), 
 HSIL_noCov_5y <- integrate(splinefun(Results_black_noCov$Year, Results_black_noCov$All_HSIL), 2020,2025)
 HSIL_Cov_5y
 HSIL_noCov_5y
-HSIL_Cov_num_5y <- 257327.1
-HSIL_noCov_num_5y <- 246932.6
+HSIL_Cov_num_5y <- 268244.8
+HSIL_noCov_num_5y <- 258971.8
 HSIL_abs_change_5y <- HSIL_Cov_num_5y - HSIL_noCov_num_5y
 HSIL_perc_change_5y <- HSIL_abs_change_5y/HSIL_noCov_num_5y*100
 HSIL_perc_change_5y
@@ -568,8 +575,8 @@ HSIL_Cov_30y <- integrate(splinefun(Results_black$Year, Results_black$All_HSIL),
 HSIL_noCov_30y <- integrate(splinefun(Results_black_noCov$Year, Results_black_noCov$All_HSIL), 2020,2050)
 HSIL_Cov_30y
 HSIL_noCov_30y
-HSIL_Cov_num_30y <- 1475416
-HSIL_noCov_num_30y <- 1465166
+HSIL_Cov_num_30y <- 1545440
+HSIL_noCov_num_30y <- 1534519
 HSIL_abs_change_30y <- HSIL_Cov_num_30y - HSIL_noCov_num_30y
 HSIL_perc_change_30y <- HSIL_abs_change_30y/HSIL_noCov_num_30y*100
 HSIL_perc_change_30y
@@ -582,8 +589,8 @@ HSIL_det_Cov_5y <- integrate(splinefun(Results_black$Year, Results_black$Det_HSI
 HSIL_det_noCov_5y <- integrate(splinefun(Results_black_noCov$Year, Results_black_noCov$Det_HSIL), 2020,2025)
 HSIL_det_Cov_5y
 HSIL_det_noCov_5y
-HSIL_det_Cov_num_5y <- 137250.2
-HSIL_det_noCov_num_5y <- 137357.4
+HSIL_det_Cov_num_5y <- 108258.8
+HSIL_det_noCov_num_5y <- 111911.7
 HSIL_det_abs_change_5y <- HSIL_det_Cov_num_5y - HSIL_det_noCov_num_5y
 HSIL_det_perc_change_5y <- HSIL_det_abs_change_5y/HSIL_det_noCov_num_5y*100
 HSIL_det_perc_change_5y
@@ -593,8 +600,8 @@ HSIL_det_Cov_30y <- integrate(splinefun(Results_black$Year, Results_black$Det_HS
 HSIL_det_noCov_30y <- integrate(splinefun(Results_black_noCov$Year, Results_black_noCov$Det_HSIL), 2020,2050)
 HSIL_det_Cov_30y
 HSIL_det_noCov_30y
-HSIL_det_Cov_num_30y <- 813234.1
-HSIL_det_noCov_num_30y <- 813790.4
+HSIL_det_Cov_num_30y <- 658555.9
+HSIL_det_noCov_num_30y <- 661579.6
 HSIL_det_abs_change_30y <- HSIL_det_Cov_num_30y - HSIL_det_noCov_num_30y
 HSIL_det_perc_change_30y <- HSIL_det_abs_change_30y/HSIL_det_noCov_num_30y*100
 HSIL_det_perc_change_30y
@@ -607,8 +614,8 @@ cancer_all_Cov_5y <- integrate(splinefun(Results_black$Year, Results_black$All_C
 cancer_all_noCov_5y <- integrate(splinefun(Results_black_noCov$Year, Results_black_noCov$All_Cancer), 2020,2025)
 cancer_all_Cov_5y
 cancer_all_noCov_5y
-cancer_all_Cov_num_5y <- 40049.19
-cancer_all_noCov_num_5y <- 40186.09
+cancer_all_Cov_num_5y <- 23438.97
+cancer_all_noCov_num_5y <- 22595.76
 cancer_all_abs_change_5y <- cancer_all_Cov_num_5y - cancer_all_noCov_num_5y
 cancer_all_perc_change_5y <- cancer_all_abs_change_5y/cancer_all_noCov_num_5y*100
 cancer_all_perc_change_5y
@@ -618,8 +625,8 @@ cancer_all_Cov_30y <- integrate(splinefun(Results_black$Year, Results_black$All_
 cancer_all_noCov_30y <- integrate(splinefun(Results_black_noCov$Year, Results_black_noCov$All_Cancer), 2020,2050)
 cancer_all_Cov_30y
 cancer_all_noCov_30y
-cancer_all_Cov_num_30y <- 236832
-cancer_all_noCov_num_30y <- 236765.3
+cancer_all_Cov_num_30y <- 133261.9
+cancer_all_noCov_num_30y <- 131957
 cancer_all_abs_change_30y <- cancer_all_Cov_num_30y - cancer_all_noCov_num_30y
 cancer_all_perc_change_30y <- cancer_all_abs_change_30y/cancer_all_noCov_num_30y*100
 cancer_all_perc_change_30y
@@ -632,8 +639,8 @@ cancer_det_Cov_5y <- integrate(splinefun(Results_black$Year, Results_black$Det_C
 cancer_det_noCov_5y <- integrate(splinefun(Results_black_noCov$Year, Results_black_noCov$Det_Cancer), 2020,2025)
 cancer_det_Cov_5y
 cancer_det_noCov_5y
-cancer_det_Cov_num_5y <- 19937.03
-cancer_det_noCov_num_5y <- 19959.32
+cancer_det_Cov_num_5y <- 5784
+cancer_det_noCov_num_5y <- 5602.502
 cancer_det_abs_change_5y <- cancer_det_Cov_num_5y - cancer_det_noCov_num_5y
 cancer_det_perc_change_5y <- cancer_det_abs_change_5y/cancer_det_noCov_num_5y*100
 cancer_det_perc_change_5y
@@ -643,8 +650,8 @@ cancer_det_Cov_30y <- integrate(splinefun(Results_black$Year, Results_black$Det_
 cancer_det_noCov_30y <- integrate(splinefun(Results_black_noCov$Year, Results_black_noCov$Det_Cancer), 2020,2050)
 cancer_det_Cov_30y
 cancer_det_noCov_30y
-cancer_det_Cov_num_30y <- 117549.3
-cancer_det_noCov_num_30y <- 117476.2
+cancer_det_Cov_num_30y <- 32934.77
+cancer_det_noCov_num_30y <- 32624.6
 cancer_det_abs_change_30y <- cancer_det_Cov_num_30y - cancer_det_noCov_num_30y
 cancer_det_perc_change_30y <- cancer_det_abs_change_30y/cancer_det_noCov_num_30y*100
 cancer_det_perc_change_30y
@@ -657,8 +664,8 @@ cancer_death_Cov_5y <- integrate(splinefun(Results_black$Year, Results_black$Can
 cancer_death_noCov_5y <- integrate(splinefun(Results_black_noCov$Year, Results_black_noCov$Cancer_Death), 2020,2025)
 cancer_death_Cov_5y
 cancer_death_noCov_5y
-cancer_death_Cov_num_5y <- 6879.559
-cancer_death_noCov_num_5y <- 7010.79
+cancer_death_Cov_num_5y <- 2034.402
+cancer_death_noCov_num_5y <- 1975.222
 cancer_death_abs_change_5y <- cancer_death_Cov_num_5y - cancer_death_noCov_num_5y
 cancer_death_perc_change_5y <- cancer_death_abs_change_5y/cancer_death_noCov_num_5y*100
 cancer_death_perc_change_5y
@@ -668,8 +675,8 @@ cancer_death_Cov_30y <- integrate(splinefun(Results_black$Year, Results_black$Ca
 cancer_death_noCov_30y <- integrate(splinefun(Results_black_noCov$Year, Results_black_noCov$Cancer_Death), 2020,2050)
 cancer_death_Cov_30y
 cancer_death_noCov_30y
-cancer_death_Cov_num_30y <- 41176.08
-cancer_death_noCov_num_30y <- 41190.32
+cancer_death_Cov_num_30y <- 11562.79
+cancer_death_noCov_num_30y <- 11457.61
 cancer_death_abs_change_30y <- cancer_death_Cov_num_30y - cancer_death_noCov_num_30y
 cancer_death_perc_change_30y <- cancer_death_abs_change_30y/cancer_death_noCov_num_30y*100
 cancer_death_perc_change_30y
@@ -685,8 +692,8 @@ HSIL_Cov_5y <- integrate(splinefun(Results_hisp$Year, Results_hisp$All_HSIL), 20
 HSIL_noCov_5y <- integrate(splinefun(Results_hisp_noCov$Year, Results_hisp_noCov$All_HSIL), 2020,2025)
 HSIL_Cov_5y
 HSIL_noCov_5y
-HSIL_Cov_num_5y <- 380463.6
-HSIL_noCov_num_5y <- 363648.4
+HSIL_Cov_num_5y <- 387069.9
+HSIL_noCov_num_5y <- 373114.4
 HSIL_abs_change_5y <- HSIL_Cov_num_5y - HSIL_noCov_num_5y
 HSIL_perc_change_5y <- HSIL_abs_change_5y/HSIL_noCov_num_5y*100
 HSIL_perc_change_5y
@@ -696,8 +703,8 @@ HSIL_Cov_30y <- integrate(splinefun(Results_hisp$Year, Results_hisp$All_HSIL), 2
 HSIL_noCov_30y <- integrate(splinefun(Results_hisp_noCov$Year, Results_hisp_noCov$All_HSIL), 2020,2050)
 HSIL_Cov_30y
 HSIL_noCov_30y
-HSIL_Cov_num_30y <- 2171262
-HSIL_noCov_num_30y <- 2154297
+HSIL_Cov_num_30y <- 2222872
+HSIL_noCov_num_30y <- 2206350
 HSIL_abs_change_30y <- HSIL_Cov_num_30y - HSIL_noCov_num_30y
 HSIL_perc_change_30y <- HSIL_abs_change_30y/HSIL_noCov_num_30y*100
 HSIL_perc_change_30y
@@ -710,8 +717,8 @@ HSIL_det_Cov_5y <- integrate(splinefun(Results_hisp$Year, Results_hisp$Det_HSIL)
 HSIL_det_noCov_5y <- integrate(splinefun(Results_hisp_noCov$Year, Results_hisp_noCov$Det_HSIL), 2020,2025)
 HSIL_det_Cov_5y
 HSIL_det_noCov_5y
-HSIL_det_Cov_num_5y <- 190938.2
-HSIL_det_noCov_num_5y <- 190820.6
+HSIL_det_Cov_num_5y <- 148392.1
+HSIL_det_noCov_num_5y <- 153738
 HSIL_det_abs_change_5y <- HSIL_det_Cov_num_5y - HSIL_det_noCov_num_5y
 HSIL_det_perc_change_5y <- HSIL_det_abs_change_5y/HSIL_det_noCov_num_5y*100
 HSIL_det_perc_change_5y
@@ -721,8 +728,8 @@ HSIL_det_Cov_30y <- integrate(splinefun(Results_hisp$Year, Results_hisp$Det_HSIL
 HSIL_det_noCov_30y <- integrate(splinefun(Results_hisp_noCov$Year, Results_hisp_noCov$Det_HSIL), 2020,2050)
 HSIL_det_Cov_30y
 HSIL_det_noCov_30y
-HSIL_det_Cov_num_30y <- 1128172
-HSIL_det_noCov_num_30y <- 1128346
+HSIL_det_Cov_num_30y <- 902523.5
+HSIL_det_noCov_num_30y <- 906977.5
 HSIL_det_abs_change_30y <- HSIL_det_Cov_num_30y - HSIL_det_noCov_num_30y
 HSIL_det_perc_change_30y <- HSIL_det_abs_change_30y/HSIL_det_noCov_num_30y*100
 HSIL_det_perc_change_30y
@@ -735,8 +742,8 @@ cancer_all_Cov_5y <- integrate(splinefun(Results_hisp$Year, Results_hisp$All_Can
 cancer_all_noCov_5y <- integrate(splinefun(Results_hisp_noCov$Year, Results_hisp_noCov$All_Cancer), 2020,2025)
 cancer_all_Cov_5y
 cancer_all_noCov_5y
-cancer_all_Cov_num_5y <- 70587.71
-cancer_all_noCov_num_5y <- 70959.67
+cancer_all_Cov_num_5y <- 41617.17
+cancer_all_noCov_num_5y <- 40213.71
 cancer_all_abs_change_5y <- cancer_all_Cov_num_5y - cancer_all_noCov_num_5y
 cancer_all_perc_change_5y <- cancer_all_abs_change_5y/cancer_all_noCov_num_5y*100
 cancer_all_perc_change_5y
@@ -746,8 +753,8 @@ cancer_all_Cov_30y <- integrate(splinefun(Results_hisp$Year, Results_hisp$All_Ca
 cancer_all_noCov_30y <- integrate(splinefun(Results_hisp_noCov$Year, Results_hisp_noCov$All_Cancer), 2020,2050)
 cancer_all_Cov_30y
 cancer_all_noCov_30y
-cancer_all_Cov_num_30y <- 417279
-cancer_all_noCov_num_30y <- 417127.3
+cancer_all_Cov_num_30y <- 235961.6
+cancer_all_noCov_num_30y <- 233727.2
 cancer_all_abs_change_30y <- cancer_all_Cov_num_30y - cancer_all_noCov_num_30y
 cancer_all_perc_change_30y <- cancer_all_abs_change_30y/cancer_all_noCov_num_30y*100
 cancer_all_perc_change_30y
@@ -760,8 +767,8 @@ cancer_det_Cov_5y <- integrate(splinefun(Results_hisp$Year, Results_hisp$Det_Can
 cancer_det_noCov_5y <- integrate(splinefun(Results_hisp_noCov$Year, Results_hisp_noCov$Det_Cancer), 2020,2025)
 cancer_det_Cov_5y
 cancer_det_noCov_5y
-cancer_det_Cov_num_5y <- 34327.49
-cancer_det_noCov_num_5y <- 34412.58
+cancer_det_Cov_num_5y <- 9905.473
+cancer_det_noCov_num_5y <- 9614.13
 cancer_det_abs_change_5y <- cancer_det_Cov_num_5y - cancer_det_noCov_num_5y
 cancer_det_perc_change_5y <- cancer_det_abs_change_5y/cancer_det_noCov_num_5y*100
 cancer_det_perc_change_5y
@@ -771,8 +778,8 @@ cancer_det_Cov_30y <- integrate(splinefun(Results_hisp$Year, Results_hisp$Det_Ca
 cancer_det_noCov_30y <- integrate(splinefun(Results_hisp_noCov$Year, Results_hisp_noCov$Det_Cancer), 2020,2050)
 cancer_det_Cov_30y
 cancer_det_noCov_30y
-cancer_det_Cov_num_30y <- 202075.2
-cancer_det_noCov_num_30y <- 201892.4
+cancer_det_Cov_num_30y <- 56196.87
+cancer_det_noCov_num_30y <- 55678.93
 cancer_det_abs_change_30y <- cancer_det_Cov_num_30y - cancer_det_noCov_num_30y
 cancer_det_perc_change_30y <- cancer_det_abs_change_30y/cancer_det_noCov_num_30y*100
 cancer_det_perc_change_30y
@@ -785,8 +792,8 @@ cancer_death_Cov_5y <- integrate(splinefun(Results_hisp$Year, Results_hisp$Cance
 cancer_death_noCov_5y <- integrate(splinefun(Results_hisp_noCov$Year, Results_hisp_noCov$Cancer_Death), 2020,2025)
 cancer_death_Cov_5y
 cancer_death_noCov_5y
-cancer_death_Cov_num_5y <- 11824.44
-cancer_death_noCov_num_5y <- 12068.35
+cancer_death_Cov_num_5y <- 3479.997
+cancer_death_noCov_num_5y <- 3387.07
 cancer_death_abs_change_5y <- cancer_death_Cov_num_5y - cancer_death_noCov_num_5y
 cancer_death_perc_change_5y <- cancer_death_abs_change_5y/cancer_death_noCov_num_5y*100
 cancer_death_perc_change_5y
@@ -796,8 +803,8 @@ cancer_death_Cov_30y <- integrate(splinefun(Results_hisp$Year, Results_hisp$Canc
 cancer_death_noCov_30y <- integrate(splinefun(Results_hisp_noCov$Year, Results_hisp_noCov$Cancer_Death), 2020,2050)
 cancer_death_Cov_30y
 cancer_death_noCov_30y
-cancer_death_Cov_num_30y <- 70740.68
-cancer_death_noCov_num_30y <- 70745.21
+cancer_death_Cov_num_30y <- 19712.59
+cancer_death_noCov_num_30y <- 19523.92
 cancer_death_abs_change_30y <- cancer_death_Cov_num_30y - cancer_death_noCov_num_30y
 cancer_death_perc_change_30y <- cancer_death_abs_change_30y/cancer_death_noCov_num_30y*100
 cancer_death_perc_change_30y
