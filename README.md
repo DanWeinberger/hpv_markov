@@ -29,4 +29,4 @@ This script provides an example of how profile likelihood estimation was used to
 This script contains code to generate the absolute change and percentage change estimates for HSIL cases, cervical cancer cases, and cervical cancer deaths between the "no disruptions due to COVID" and "disruptions due to COVID" lines. It also contains code to generate the estimates for the cervical cancer:HSIL indicator.
 
 ##### plots.R
-This script contains code to generate plots of the counts of HSIL cases, cervical cancer cases, and cervical cancer deaths for each analysis. It also contains code to generate the plot for the cervical cancer:HSIL indicator.
+This script contains code to generate plots of the counts of HSIL cases, cervical cancer cases, and cervical cancer deaths for each analysis.
