@@ -396,3 +396,21 @@ p_CancerDeath_hisp
 p_race <- grid.arrange(p_HSIL_white,p_HSIL_black,p_HSIL_hisp,p_Cancer_white,p_Cancer_black,p_Cancer_hisp,p_CancerDeath_white,p_CancerDeath_black,p_CancerDeath_hisp, ncol=3, nrow=3)
 p_race
 
+
+#################################### HSIL:Cancer Indicator ####################################
+
+p_indicator <- ggplot(result_tot, aes(x=Year)) +
+  geom_line(data=result_tot, aes(y=indicator,color="Disruption"), alpha=0.7) + 
+  geom_line(data=result_tot_noCov, aes(y=indicator,color="No disruption")) +
+  coord_cartesian(
+    xlim = c(2000,2050),
+    ylim = c(0,30)) +
+  geom_vline(xintercept = 2008,linetype="dashed",alpha=0.3) +
+  geom_vline(xintercept = 2020,linetype="dashed",alpha=0.3) +
+  scale_color_manual(values=c("Disruption"="red", "No disruption"="black"), name="") +
+  labs(y="Ratio of HSIL:Cancer") +
+  theme_classic()
+p_indicator
+
+
+
