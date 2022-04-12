@@ -811,6 +811,12 @@ cancer_death_perc_change_30y
 
 
 
+#################################### HSIL:Cancer Indicator ####################################
 
+# With disruptions due to COVID
+result_tot$indicator <- result_tot$Det_HSIL/result_tot$Det_Cancer
+
+# Without disruptions due to COVID
+result_tot_noCov$indicator <- result_tot_noCov$Det_HSIL/result_tot_noCov$Det_Cancer
 
 
